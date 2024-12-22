@@ -1,0 +1,14 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 70  # Hz leave it at 70, 100 seems to be too much
+
+    effort_controller:
+      type: effort_controllers/JointGroupEffortController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+effort_controller:
+  ros__parameters:
+    joints:
+      - shaft_joint   # Joint name

@@ -1,0 +1,11 @@
+<library path= "encoded_dc_motor_kit_hardware_interface">
+    <class name = "encoded_dc_motor_kit_hardware_interface/EncodedDcMotorKitHardwareInterface"
+           type = "encoded_dc_motor_kit_hardware_interface::EncodedDcMotorKitHardwareInterface"
+           base_class = "hardware_interface/SystemInterface"
+           base_class_type = "hardware_interface::SystemInterface">
+    </class>
+
+    <description>
+        Robotic Arm Hardware SystemInterface
+    </description>
+</library>

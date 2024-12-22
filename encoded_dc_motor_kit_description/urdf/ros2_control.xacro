@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="encoded_dc_motor_kit">
+
+   <ros2_control name="motor_velocity_controller" type="system">
+      <hardware>
+         <plugin>encoded_dc_motor_kit_hardware_interface/EncodedDcMotorKitHardwareInterface</plugin>
+      </hardware>
+      <joint name="shaft_joint">
+         <state_interface name="position"/>
+         <state_interface name="velocity"/>
+         <state_interface name="acceleration"/>
+         <command_interface name="effort"/> <!-- Add command interface -->
+      </joint>
+   </ros2_control>
+</robot>
