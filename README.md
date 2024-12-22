@@ -107,7 +107,7 @@ ros2 run plotjuggler plotjuggler
 
 the topics to subscribe to are in the picture below;
 
-![PLOT JUGGLER IMAGE](../control_kit_ws/encoded_dc_motor_kit_compensator/documentation/images/velocity_publisher.png)
+![PLOT JUGGLER IMAGE](/encoded_dc_motor_kit_compensator/documentation/images/velocity_publisher.png)
 
 ## RUNNING THE KIT WITH THE P, PI, AND PID CONTROLLERS.
 
