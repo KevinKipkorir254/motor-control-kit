@@ -165,6 +165,6 @@ ros2 run encoded_dc_motor_kit_state_space_controllers LQR_contoller
 start data visualisation
 ```bash
 ros2 run plotjuggler plotjuggler
-`
+```
 
 
