@@ -60,7 +60,7 @@ namespace encoded_dc_motor_kit_hardware_interface
     try
     {
       serial_port_.Open("/dev/ttyUSB0");
-      serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
+      serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_230400);
       serial_port_.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
       serial_port_.SetParity(LibSerial::Parity::PARITY_NONE);
       serial_port_.SetStopBits(LibSerial::StopBits::STOP_BITS_1);
@@ -192,7 +192,7 @@ namespace encoded_dc_motor_kit_hardware_interface
     }
     else
     {
-      RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), BLUE_TEXT ": %d, %0.4f, %d" RESET_COLOR, data_output_sting, effort_command[0], (int)effort_command[0]);
+      RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), BLUE_TEXT ": %d" RESET_COLOR, data_output_sting);
     }
 
     return hardware_interface::return_type::OK;
