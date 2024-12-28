@@ -19,8 +19,6 @@ public:
     subscription_input_voltage_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10, std::bind(&MinimalSubscriber::update_input, this, std::placeholders::_1));
     joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&MinimalSubscriber::measure_joint_states, this, std::placeholders::_1));
     publisher_armax_model_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/armax_model", 10);
-    publisher_arx_model_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/arx_model", 10);
-    publisher_bj_model_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/bj_model", 10);
     kalman_gain_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/kalman_gain", 10);
     p_variance_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/predictor_variance", 10);
 
@@ -314,6 +312,8 @@ private:
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_bj_model_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr kalman_gain_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr p_variance_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr measured_velocity_;
 
   double shaft_position_ = 0.0;
   double shaft_velocity_ = 2.0;
@@ -337,43 +337,6 @@ private:
   /// SYSTEM STATES
   // Example past inputs, outputs, and errors
   // Example past outputs and inputs
-  std::vector<double> past_outputs = {1.0, 0.5}; // y(t-1), y(t-2)
-  std::vector<double> past_inputs = {2.0};
-
-  // ARX Models
-  // 0 -  40
-  // Define the ARX model parameters
-  std::vector<double> A_0_40_ARX = {0.0, 0.0, 0.0}; // A(z)
-  std::vector<double> B_0_40_ARX = {0.0};           // B(z)
-
-  // 40 -  80
-  // Define the ARX model parameters
-  std::vector<double> A_40_80_ARX = {0.0, 0.0, 0.0}; // A(z)
-  std::vector<double> B_40_80_ARX = {0.0};           // B(z)
-
-  // 80 -  120
-  // Define the ARX model parameters
-  std::vector<double> A_80_120_ARX = {1, -1.467, 0.4725}; // A(z)
-  std::vector<double> B_80_120_ARX = {0.0001091};         // B(z)
-
-  // 120 -  160
-  // Define the ARX model parameters
-  std::vector<double> A_120_160_ARX = {1, -1.437, 0.4414}; // A(z)
-  std::vector<double> B_120_160_ARX = {0.0001165};         // B(z)
-
-  // 160 -  200
-  // Define the ARX model parameters
-  std::vector<double> A_160_200_ARX = {1, -1.537, 0.5411}; // A(z)
-  std::vector<double> B_160_200_ARX = {0.0001312};         // B(z)
-
-  // 200 -  240
-  // Define the ARX model parameters
-  std::vector<double> A_200_240_ARX = {1, -1.669, 0.6727}; // A(z)
-  std::vector<double> B_200_240_ARX = {0.0001703};         // B(z)
-
-  /// SYSTEM STATES
-  // Example past inputs, outputs, and errors
-  // Example past outputs and inputs
 
   // Example past outputs, inputs, and errors
   std::vector<double> past_outputs_armax = {1.0, 0.5}; // y(t-1), y(t-2)
@@ -382,85 +345,9 @@ private:
 
   // ARMAX Models
   // Define the ARMAX model parameters
-  std::vector<double> A_0_40_ARMAX = {0.0, 0.0, 0.0}; // A(z)
-  std::vector<double> B_0_40_ARMAX = {0.0};           // B(z)
-  std::vector<double> C_0_40_ARMAX = {0.0, 0.0};      // C(z)
-
-  // ARMAX Models
-  // Define the ARMAX model parameters
-  std::vector<double> A_40_80_ARMAX = {0.0, 0.0, 0.0}; // A(z)
-  std::vector<double> B_40_80_ARMAX = {0.0};           // B(z)
-  std::vector<double> C_40_80_ARMAX = {0.0, 0.0};      // C(z)
-
-  // ARMAX Models
-  // Define the ARMAX model parameters
-  std::vector<double> A_80_120_ARMAX = {1, -1.888, 0.8899}; // A(z)
-  std::vector<double> B_80_120_ARMAX = {0.0001099};         // B(z)
-  std::vector<double> C_80_120_ARMAX = {1, -0.9227};        // C(z)
-
-  // ARMAX Models
-  // Define the ARMAX model parameters
-  std::vector<double> A_120_160_ARMAX = {1, -1.878, 0.8806}; // A(z)
-  std::vector<double> B_120_160_ARMAX = {0.000128};          // B(z)
-  std::vector<double> C_120_160_ARMAX = {1, -0.9374};        // C(z)
-
-  // ARMAX Models
-  // Define the ARMAX model parameters
-  std::vector<double> A_160_200_ARMAX = {1, -1.875, 0.8774}; // A(z)
-  std::vector<double> B_160_200_ARMAX = {0.0001467};         // B(z)
-  std::vector<double> C_160_200_ARMAX = {1, -0.9204};        // C(z)
-
-  // ARMAX Models
-  // Define the ARMAX model parameters
   std::vector<double> A_200_240_ARMAX = {1, -1.885, 0.8872}; // A(z)
   std::vector<double> B_200_240_ARMAX = {0.0001897};         // B(z)
   std::vector<double> C_200_240_ARMAX = {1, -0.9199};        // C(z)
-
-  /// SYSTEM STATES
-  // Example past inputs, outputs, and errors
-  // Example past outputs and inputs
-
-  // Example past inputs, outputs, and errors
-  // Initialize past data
-  std::vector<double> past_inputs_bj = {0.0, 0.0, 0.0};  // Max size required for BJ
-  std::vector<double> past_outputs_bj = {0.0, 0.0, 0.0}; // Max size required for BJ
-  std::vector<double> past_errors_bj = {0.0, 0.0, 0.0};  // Max size required for BJ
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_0_40_BJ = {0.0};           // B(z)
-  std::vector<double> F_0_40_BJ = {0.0, 0.0, 0.0}; // F(z)
-  std::vector<double> C_0_40_BJ = {0.0, 0.0, 0.0}; // C(z)
-  std::vector<double> D_0_40_BJ = {0.0, 0.0};      // D(z)
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_40_80_BJ = {0.0};           // B(z)
-  std::vector<double> F_40_80_BJ = {0.0, 0.0, 0.0}; // F(z)
-  std::vector<double> C_40_80_BJ = {0.0, 0.0, 0.0}; // C(z)
-  std::vector<double> D_40_80_BJ = {0.0, 0.0};      // D(z)
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_80_120_BJ = {0.0001073};            // B(z)
-  std::vector<double> F_80_120_BJ = {1, -0.01901, -0.4173}; // F(z)
-  std::vector<double> C_80_120_BJ = {1, -0.9966};           // C(z)
-  std::vector<double> D_80_120_BJ = {1, -1.894, 0.8964};    // D(z)
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_120_160_BJ = {0.0001263};            // B(z)
-  std::vector<double> F_120_160_BJ = {1, -0.08266, -0.3516}; // F(z)
-  std::vector<double> C_120_160_BJ = {1, -0.9881};           // C(z)
-  std::vector<double> D_120_160_BJ = {1, -1.879, 0.8814};    // D(z)
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_160_200_BJ = {0.0001454};           // B(z)
-  std::vector<double> F_160_200_BJ = {1, 0.03016, -0.3663}; // F(z)
-  std::vector<double> C_160_200_BJ = {1, -0.9913};          // C(z)
-  std::vector<double> D_160_200_BJ = {1, -1.876, 0.8784};   // D(z)
-
-  // Define the Box-Jenkins model parameters
-  std::vector<double> B_200_240_BJ = {0.0001875};           // B(z)
-  std::vector<double> F_200_240_BJ = {1, -1.888, 0.8905};   // F(z)
-  std::vector<double> C_200_240_BJ = {1, -0.0745, -0.3542}; // C(z)
-  std::vector<double> D_200_240_BJ = {1, -0.9958};          // D(z)
 
   /*----------------------------MODELS----------------------------------*/
 };

@@ -22,6 +22,8 @@ public:
     kalman_gain_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/kalman_gain", 10);
     p_variance_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/predictor_variance", 10);
     publisher_bj_model_prediction_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/bj_model_prediction", 10);
+    filtered_velocity_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
+    measured_velocity_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/measured_velocity", 10);
 
     // Predict velocity values
     predict_velocity();
@@ -33,9 +35,6 @@ public:
   void update_input(const std_msgs::msg::Float64MultiArray &msg)
   {
     input_voltage_ = msg.data[0];
-
-    // print anything
-    RCLCPP_INFO(this->get_logger(), "Input: '%f'", input_voltage_);
   }
 
   void measure_joint_states(const sensor_msgs::msg::JointState &msg)
@@ -57,8 +56,25 @@ public:
 
     // calculate measured velocity
     measured_position[0] = shaft_position_;
-    shaft_velocity_ = (measured_position[0] - measured_position[1]) / 0.01;
+    double unfiltered_shaft_velocity_ = (measured_position[0] - measured_position[1]) / 0.01;
     measured_position[1] = measured_position[0];
+
+    // publish measured velocity
+    auto measured_velocity_message = std_msgs::msg::Float64MultiArray();
+    measured_velocity_message.data.push_back(unfiltered_shaft_velocity_);
+    measured_velocity_->publish(measured_velocity_message);
+
+    // put your main code here, to run repeatedly:
+    // OBTAINING THE DATA FEEDBACK
+    // filtering the data
+    shaft_velocity_ = 0.969 * yn_1 + 0.0155 * unfiltered_shaft_velocity_ + 0.0155 * xn_1; // low pass filter
+    xn_1 = unfiltered_shaft_velocity_;
+    yn_1 = shaft_velocity_;
+
+    // publish filtered velocity
+    auto filtered_velocity_message = std_msgs::msg::Float64MultiArray();
+    filtered_velocity_message.data.push_back(shaft_velocity_);
+    filtered_velocity_->publish(filtered_velocity_message);
 
     // Update kalman gain
     update_kalman_gains();
@@ -75,6 +91,7 @@ public:
 
     // update velocity
     update_velocity();
+    update_outputs(); // so the model uses the kalman velocity estimate as the prevous velocity
 
     // publish update
     auto bj_model_message = std_msgs::msg::Float64MultiArray();
@@ -122,7 +139,6 @@ public:
   {
     update_inputs();
     output_velocity(&bj_model_);
-    update_outputs();
 
     bj_model_velocity[0] = bj_model_;
   }
@@ -141,7 +157,7 @@ public:
 
   void update_outputs()
   {
-    past_outputs_bj.insert(past_outputs_bj.begin(), bj_model_);
+    past_outputs_bj.insert(past_outputs_bj.begin(), bj_model_velocity[1]);
 
     past_outputs_bj.pop_back();
   }
@@ -198,9 +214,11 @@ private:
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr kalman_gain_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr p_variance_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_bj_model_prediction_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr measured_velocity_;
 
   double shaft_position_ = 0.0;
-  double shaft_velocity_ = 2.0;
+  double shaft_velocity_ = 0.0;
   double input_voltage_ = 0.0;
 
   double arx_model_ = 0.0;
@@ -211,10 +229,12 @@ private:
   std::vector<double> armax_model_velocity = {0.0, 0.0}; /// v_n_n-1, v_n_n
   std::vector<double> bj_model_velocity = {0.0, 0.0};    /// v_n_n-1, v_n_n
   std::vector<double> measured_position = {0.0, 0.0};    /// v(k)   , v(k-1)
+  std::vector<double> predictor_variance = {100.01, 0.0}; /// P_n_n-1, P_n_n
 
-  std::vector<double> predictor_variance = {0.01, 0.0}; /// P_n_n-1, P_n_n
+  // Low pass filter data
+  double yn_1 = 0, xn_1 = 0;
   double tool_error_variance = 0.01;
-  double q_model_noise = 1.01; // 4.0;
+  double q_model_noise = 0.001; // 4.0;
   double Kalman_gain_ = 0.0;   /// K_n_n-1, K_n_n
 
   /*----------------------------MODELS----------------------------------*/
