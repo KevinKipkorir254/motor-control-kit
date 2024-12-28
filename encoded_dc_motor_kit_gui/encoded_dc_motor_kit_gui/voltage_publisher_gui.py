@@ -44,7 +44,7 @@ class EffortControlGUI:
         self.slider.pack(pady=20)
 
         # Bind the release event to spring back the slider
-        self.slider.bind("<ButtonRelease-1>", self.spring_back)
+        # self.slider.bind("<ButtonRelease-1>", self.spring_back)
 
         # Exit button
         self.exit_button = tk.Button(

@@ -140,7 +140,7 @@ namespace encoded_dc_motor_kit_hardware_interface
       RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), GREEN_TEXT ": %d" RESET_COLOR, signed_data);
     }
 
-    double position = (((double)signed_data) / 500);
+    double position = (((double)signed_data) / 500)* 2 * M_PI; //convert to radians
 
     // calculate velocity
     double time_interval = period.seconds(); // get the time interval in seconds

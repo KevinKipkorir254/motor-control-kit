@@ -34,18 +34,27 @@ if(BUILD_TESTING)
 endif()
 
 # Include directories
-add_executable(multivariate_kalman_filter src/shaft_velocity_filter.cpp)
-ament_target_dependencies(multivariate_kalman_filter rclcpp std_msgs sensor_msgs Eigen3)
+add_executable(kalman_filter_with_arx_model src/shaft_velocity_filter.cpp)
+ament_target_dependencies(kalman_filter_with_arx_model rclcpp std_msgs sensor_msgs Eigen3)
+
+
+add_executable(kalman_filter_with_bj_model src/shaft_velocity_filter_bj.cpp)
+ament_target_dependencies(kalman_filter_with_bj_model rclcpp std_msgs sensor_msgs Eigen3)
+
+add_executable(kalman_filter_with_arxmax_model src/shaft_velocity_filter_armax.cpp)
+ament_target_dependencies(kalman_filter_with_arxmax_model rclcpp std_msgs sensor_msgs Eigen3)
 
 
 # Include directories
-target_include_directories(multivariate_kalman_filter PUBLIC
+target_include_directories(kalman_filter_with_arx_model PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Install the target
 install(TARGETS
-  multivariate_kalman_filter
+  kalman_filter_with_arx_model
+  kalman_filter_with_bj_model
+  kalman_filter_with_arxmax_model
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

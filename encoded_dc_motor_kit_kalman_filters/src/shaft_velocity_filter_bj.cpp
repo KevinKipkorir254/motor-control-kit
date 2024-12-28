@@ -18,23 +18,24 @@ public:
   {
     subscription_input_voltage_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10, std::bind(&MinimalSubscriber::update_input, this, std::placeholders::_1));
     joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&MinimalSubscriber::measure_joint_states, this, std::placeholders::_1));
-    publisher_arx_model_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/arx_model", 10);
+    publisher_bj_model_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/bj_model", 10);
     kalman_gain_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/kalman_gain", 10);
     p_variance_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/predictor_variance", 10);
-    publisher_arx_model_prediction_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/arx_model_prediction", 10);
+    publisher_bj_model_prediction_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/bj_model_prediction", 10);
 
     // Predict velocity values
     predict_velocity();
 
-
     // Predict predictor variance
     predict_predictor_variance();
-
   }
 
   void update_input(const std_msgs::msg::Float64MultiArray &msg)
   {
     input_voltage_ = msg.data[0];
+
+    // print anything
+    RCLCPP_INFO(this->get_logger(), "Input: '%f'", input_voltage_);
   }
 
   void measure_joint_states(const sensor_msgs::msg::JointState &msg)
@@ -75,20 +76,21 @@ public:
     // update velocity
     update_velocity();
 
-    auto arx_model_message = std_msgs::msg::Float64MultiArray();
-    arx_model_message.data.push_back(arx_model_velocity[1]);
-    publisher_arx_model_->publish(arx_model_message);
+    // publish update
+    auto bj_model_message = std_msgs::msg::Float64MultiArray();
+    bj_model_message.data.push_back(bj_model_velocity[1]);
+    publisher_bj_model_->publish(bj_model_message);
 
     // update variances P_n_n
     update_predictor_variance();
 
     // Predict velocity values
     predict_velocity();
-    
+
     //publish prediction
-    auto arx_model_prediction_message = std_msgs::msg::Float64MultiArray();
-    arx_model_prediction_message.data.push_back(arx_model_velocity[0]);
-    publisher_arx_model_prediction_->publish(arx_model_prediction_message);
+    auto prediction_message = std_msgs::msg::Float64MultiArray();
+    prediction_message.data.push_back(bj_model_velocity[0]);
+    publisher_bj_model_prediction_->publish(prediction_message);
 
     // Predict predictor variance
     predict_predictor_variance();
@@ -99,7 +101,7 @@ public:
 
   void update_velocity()
   {
-    arx_model_velocity[1] = arx_model_velocity[0] + Kalman_gain_ * (shaft_velocity_ - arx_model_velocity[0]);
+    bj_model_velocity[1] = bj_model_velocity[0] + Kalman_gain_ * (shaft_velocity_ - bj_model_velocity[0]);
   }
 
   void update_kalman_gains()
@@ -119,11 +121,10 @@ public:
   void predict_velocity()
   {
     update_inputs();
-    output_velocity(&arx_model_);
+    output_velocity(&bj_model_);
     update_outputs();
 
-    /// x_1_0
-    arx_model_velocity[0] = arx_model_;
+    bj_model_velocity[0] = bj_model_;
   }
 
   void predict_predictor_variance()
@@ -133,59 +134,59 @@ public:
 
   void update_inputs()
   {
-    past_inputs.insert(past_inputs.begin(), input_voltage_);
+    past_inputs_bj.insert(past_inputs_bj.begin(), input_voltage_);
 
-    past_inputs.pop_back();
+    past_inputs_bj.pop_back();
   }
-
 
   void update_outputs()
   {
-    past_outputs.insert(past_outputs.begin(), arx_model_);
-    past_outputs.pop_back();
+    past_outputs_bj.insert(past_outputs_bj.begin(), bj_model_);
+
+    past_outputs_bj.pop_back();
   }
 
-  // ARX Model Function
-  double ARX_Model(const std::vector<double> &A, const std::vector<double> &B, const std::vector<double> &past_outputs, const std::vector<double> &past_inputs, double e_t = 0.0)
+  double BJ_Model(const std::vector<double> &B, const std::vector<double> &F, const std::vector<double> &C, const std::vector<double> &D,
+                  const std::vector<double> &past_inputs, const std::vector<double> &past_outputs, const std::vector<double> &past_errors)
   {
-    // Validate sizes
-    if (past_outputs.size() < A.size() - 1)
+    if (past_inputs.size() < B.size() || past_outputs.size() < F.size() - 1 || past_errors.size() < C.size() - 1)
     {
-      throw std::invalid_argument("Insufficient past_outputs for the given A array");
-    }
-    if (past_inputs.size() < B.size())
-    {
-      throw std::invalid_argument("Insufficient past_inputs for the given B array");
+      throw std::invalid_argument("Insufficient past data for BJ model");
     }
 
-    // Calculate denominator (A part)
-    double denom = A[0];
-    double y_t = 0.0;
+    double output = 0.0;
 
-    for (size_t i = 1; i < A.size(); ++i)
-    {
-      y_t -= A[i] * past_outputs[i - 1];
-    }
-
-    // Calculate numerator (B part)
+    // Input contribution (B/F terms)
+    double input_contribution = 0.0;
     for (size_t i = 0; i < B.size(); ++i)
     {
-      y_t += B[i] * past_inputs[i];
+      input_contribution += B[i] * past_inputs[i];
+    }
+    for (size_t i = 1; i < F.size(); ++i)
+    {
+      input_contribution -= F[i] * past_outputs[i - 1];
     }
 
-    // Add noise (e(t))
-    y_t += e_t;
+    // Noise contribution (C/D terms)
+    double noise_contribution = 0.0;
+    for (size_t i = 0; i < C.size(); ++i)
+    {
+      noise_contribution += C[i] * past_errors[i];
+    }
+    for (size_t i = 1; i < D.size(); ++i)
+    {
+      noise_contribution -= D[i] * past_errors[i - 1];
+    }
 
-    // Normalize with denominator
-    y_t /= denom;
-
-    return y_t;
+    output = input_contribution / F[0] + noise_contribution / D[0];
+    return output;
   }
 
-  bool output_velocity(double *arx_model)
+  bool output_velocity(double *bj_model)
   {
     // Output the velocity
-    *arx_model = ARX_Model(A_200_240_ARX, B_200_240_ARX, past_outputs, past_inputs);
+
+    *bj_model = BJ_Model(B_200_240_BJ, F_200_240_BJ, C_200_240_BJ, D_200_240_BJ, past_inputs_bj, past_outputs_bj, past_errors_bj);
 
     return true;
   }
@@ -193,36 +194,46 @@ public:
 private:
   rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_input_voltage_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
-  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_arx_model_;
-  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_arx_model_prediction_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_bj_model_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr kalman_gain_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr p_variance_;
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_bj_model_prediction_;
 
   double shaft_position_ = 0.0;
   double shaft_velocity_ = 2.0;
   double input_voltage_ = 0.0;
 
   double arx_model_ = 0.0;
+  double armax_model_ = 0.0;
+  double bj_model_ = 0.0;
 
   std::vector<double> arx_model_velocity = {0.0, 0.0};   /// v_n_n-1, v_n_n
+  std::vector<double> armax_model_velocity = {0.0, 0.0}; /// v_n_n-1, v_n_n
+  std::vector<double> bj_model_velocity = {0.0, 0.0};    /// v_n_n-1, v_n_n
   std::vector<double> measured_position = {0.0, 0.0};    /// v(k)   , v(k-1)
+
   std::vector<double> predictor_variance = {0.01, 0.0}; /// P_n_n-1, P_n_n
   double tool_error_variance = 0.01;
-  double q_model_noise = 1.01;//4.0;
-  double Kalman_gain_ = 0.0; /// K_n_n-1, K_n_n
+  double q_model_noise = 1.01; // 4.0;
+  double Kalman_gain_ = 0.0;   /// K_n_n-1, K_n_n
 
   /*----------------------------MODELS----------------------------------*/
   /// SYSTEM STATES
   // Example past inputs, outputs, and errors
   // Example past outputs and inputs
-  std::vector<double> past_outputs = {0.0, 0.0}; // y(t-1), y(t-2)
-  std::vector<double> past_inputs = {0.0};
 
-  // ARX Models
-  // 200 -  240
-  // Define the ARX model parameters
-  std::vector<double> A_200_240_ARX = {1, -1.669, 0.6727}; // A(z)
-  std::vector<double> B_200_240_ARX = {0.0001703};         // B(z)
+  // Example past inputs, outputs, and errors
+  // Initialize past data
+  std::vector<double> past_inputs_bj = {0.0, 0.0, 0.0};  // Max size required for BJ
+  std::vector<double> past_outputs_bj = {0.0, 0.0, 0.0}; // Max size required for BJ
+  std::vector<double> past_errors_bj = {0.0, 0.0, 0.0};  // Max size required for BJ
+
+  // Define the Box-Jenkins model parameters
+  std::vector<double> B_200_240_BJ = {0.0001875};           // B(z)
+  std::vector<double> F_200_240_BJ = {1, -1.888, 0.8905};   // F(z)
+  std::vector<double> C_200_240_BJ = {1, -0.0745, -0.3542}; // C(z)
+  std::vector<double> D_200_240_BJ = {1, -0.9958};          // D(z)
+
   /*----------------------------MODELS----------------------------------*/
 };
 
