@@ -57,4 +57,12 @@ install(TARGETS
   kalman_filter_with_arxmax_model
   DESTINATION lib/${PROJECT_NAME})
 
+
+  install(DIRECTORY
+  config
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+
 ament_package()

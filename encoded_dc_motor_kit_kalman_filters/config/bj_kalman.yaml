@@ -1,0 +1,12 @@
+/**:
+  ros__parameters:
+    armax_kalman:
+      # Kalman filter parameters
+      Q: 0.01         # process noise variance parameter
+      R: 100.01         # tool variance parameter
+      P: [0.01, 0.0 ]   # initial state covariance
+      x0: 0.0         # initial state
+      # Sampling time
+      Ts: 0.01          # Sampling time
+      # Enable/disable debug messages
+      debug: false

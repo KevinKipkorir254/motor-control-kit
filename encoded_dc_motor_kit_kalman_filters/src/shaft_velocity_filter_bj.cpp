@@ -25,6 +25,32 @@ public:
     filtered_velocity_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
     measured_velocity_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/measured_velocity", 10);
 
+    //initialize kalman parameters
+    this->declare_parameter("Q", rclcpp::PARAMETER_DOUBLE);
+    this->declare_parameter("R", rclcpp::PARAMETER_DOUBLE);
+    this->declare_parameter("P", rclcpp::PARAMETER_DOUBLE_ARRAY);
+
+    try
+    {
+      {
+        double Q = this->get_parameter("Q").as_double();
+        double R = this->get_parameter("R").as_double();
+        std::vector<double> P = this->get_parameter("P").as_double_array();
+
+        tool_error_variance = R;
+        q_model_noise = Q;
+        predictor_variance[0] = P[0];
+        predictor_variance[1] = P[1];
+      }
+    }
+    catch(const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+    }
+    
+
+
+
     // Predict velocity values
     predict_velocity();
 
@@ -56,7 +82,7 @@ public:
 
     // calculate measured velocity
     measured_position[0] = shaft_position_;
-    double unfiltered_shaft_velocity_ = (measured_position[0] - measured_position[1]) / 0.01;
+    unfiltered_shaft_velocity_ = (measured_position[0] - measured_position[1]) / 0.01;
     measured_position[1] = measured_position[0];
 
     // publish measured velocity
@@ -118,7 +144,7 @@ public:
 
   void update_velocity()
   {
-    bj_model_velocity[1] = bj_model_velocity[0] + Kalman_gain_ * (shaft_velocity_ - bj_model_velocity[0]);
+    bj_model_velocity[1] = bj_model_velocity[0] + Kalman_gain_ * (unfiltered_shaft_velocity_ - bj_model_velocity[0]);
   }
 
   void update_kalman_gains()
@@ -233,9 +259,10 @@ private:
 
   // Low pass filter data
   double yn_1 = 0, xn_1 = 0;
-  double tool_error_variance = 0.01;
+  double tool_error_variance = 4.01;
   double q_model_noise = 0.001; // 4.0;
   double Kalman_gain_ = 0.0;   /// K_n_n-1, K_n_n
+  double unfiltered_shaft_velocity_ = 0.0;
 
   /*----------------------------MODELS----------------------------------*/
   /// SYSTEM STATES
