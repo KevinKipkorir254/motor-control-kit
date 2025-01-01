@@ -1,6 +1,6 @@
 # STATE SPACE CONTROLLERS
 
-The Motor Kit includes advanced state-space control techniques to enable precise and robust control of dynamic systems. This module supports:
+The Motor Kit includes advanced state-space control techniques to enable precise and robust control of dynamic systems.
 
 ## Features
  - *Pole Placement Design*: Customize the location of system poles to meet desired performance criteria.
