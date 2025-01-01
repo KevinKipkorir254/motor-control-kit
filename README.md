@@ -17,5 +17,20 @@ The design process can be found in the following github page. [DESIGN DOCUMENTAT
  - *Filtering*: Implement Kalman filters, state observers, and other filtering techniques.
  - *Integration with ROS 2*: Seamlessly interfaces with ROS 2 for advanced robotics and control applications.
 
+## Architecture
+
+The architecture of the Motor Kit is modular and organized for easy customization. Below is an overview:
+
+ - *Motor Kit*: Acts as the main physical interface, housing the motor and encoder.
+ - *Hardware Interface*: Facilitates communication between the microcontroller and ROS 2 through serial data exchange.
+ - *Controllers*: Includes:
+    - *PID*: Proportional-Integral-Derivative controllers for precise control.
+    - *Compensators*: To modify system dynamics.
+    - *State-Space Controllers*: Advanced control for multivariable systems.
+ - *Filters*: Tools for signal processing and noise reduction.
+    - *Classical filters*: For implementation of low pass filters.
+    - *Kalman Filters*: For optimal estimation of system states.
+    - *State Observers*: To reconstruct unmeasured states.
+
 
 
