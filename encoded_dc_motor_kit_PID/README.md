@@ -5,11 +5,18 @@ The Motor Kit supports various types of classical controllers, including Proport
  - **P Controller (Proportional)**:
 The P controller applies a correction proportional to the current error. It improves response speed but may result in steady-state error.
 
+![Proportional](/encoded_dc_motor_kit_PID/documentation/images/Proportional.png)
+
  - **PI Controller (Proportional-Integral)**:
 The PI controller combines proportional action with integral action, which accumulates past errors to eliminate steady-state error, making it ideal for systems requiring high accuracy.
 
  - **PID Controller (Proportional-Integral-Derivative)**:
 The PID controller adds derivative action to predict future errors and dampen oscillations, providing a balanced approach for systems requiring stability and precision.
+
+- **Two-DOF PID Controller** :
+The Two-Degrees-of-Freedom PID Controller is an advanced variation of the traditional PID controller, designed to provide greater flexibility in control system performance. Unlike a standard PID controller, which uses a single tuning parameter set, the 2-DOF PID controller separates the tuning for setpoint tracking and disturbance rejection.
+
+![two degree PID controller](/encoded_dc_motor_kit_PID/documentation/images/two_degrees_of_freedom.png)
 
 These controllers are simple yet effective, making them a cornerstone of control system design and an excellent starting point for experimenting with the Motor Kit.
 
