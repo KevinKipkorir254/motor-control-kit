@@ -8,6 +8,8 @@ In this package, we employ three different models during the prediction stage:
  - **ARMAX (Auto-Regressive Moving Average with Exogenous inputs)**: An extension of ARX, incorporating a moving average term for better noise modeling.
  - **BJ (Box-Jenkins)**: A flexible model that combines ARMAX with additional noise dynamics, providing enhanced performance in systems with significant noise.
 
+![KALMAN FILTER](/encoded_dc_motor_kit_kalman_filters/documentation/images/kalman%20filter%20flowchart.png)
+
 
 ## RUNNING THE KIT WITH THE KALMAN FILTERS WITH DIFERENT MODELS
 
