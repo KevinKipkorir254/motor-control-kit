@@ -32,27 +32,12 @@ def generate_launch_description():
         arguments=[urdf_file],
     )
 
-    joint_state_publisher_gui = Node(
-        package="joint_state_publisher_gui",
-        executable="joint_state_publisher_gui",
-        name="joint_state_publisher_gui",
-        output="screen",
-    )
-
     config_file_path = os.path.join( get_package_share_directory('encoded_dc_motor_kit_control'), 'config','controller.yaml')
 
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[{"robot_description": robot_description}, config_file_path],
-        #parameters=[config_file_path],
-        output="screen"
-    )
-
-    velocity_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["velocity_controller"],
         output="screen"
     )
 
@@ -63,26 +48,12 @@ def generate_launch_description():
         output="screen"
     )
 
-    rviz_config = os.path.join(get_package_share_directory("encoded_dc_motor_kit_description"), "rviz", "rviz_sim.rviz")
-
-    rviz2 = Node(
-        package="rviz2",
-        executable = "rviz2",
-        name = "rviz2",
-        output = "screen",
-        arguments=["-d", rviz_config]
-    )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster"],
         output="screen"
-    )
-
-    models_visualisation_node = Node(
-        package = "encoded_dc_motor_kit_models",
-        executable = "model_visualiser"
     )
 
 
@@ -92,8 +63,4 @@ def generate_launch_description():
         controller_manager,
         joint_state_broadcaster_spawner,
         effort_controller_spawner,
-        #velocity_controller_spawner,
-        #rviz2,
-        #joint_state_publisher_gui,
-        #models_visualisation_node,
     ])

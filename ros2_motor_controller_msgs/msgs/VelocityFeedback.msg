@@ -1,3 +1,0 @@
-float64 real_velocity
-float64 bj_velocity
-float64 armax_velocity
