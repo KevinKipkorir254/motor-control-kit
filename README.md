@@ -28,9 +28,49 @@ The architecture of the Motor Kit is modular and organized for easy customizatio
   
 ![ROS2 ARCHITECTURE](/encoded_dc_motor_kit_kalman_filters/documentation/images/DESIGN%20SCHEME.png)
 
+## System Interview
+
+ - *Velocity GUI*: Provides a user-friendly interface for setting setpoint velocities to be used by the controllers.
+ - *Controllers*: Handles the core logic for control systems designed to be used one at a time, each comes with a simple low pass filter. Within each package there is a readme describing how it works and how to use it.
+ - *Feedback Loop*: Real-time communication between the Motor Kit, Hardware Interface, and controllers.
+
 ## Design Documentation
 
 Detailed design documentation is available at [DOCUMENTATION](https://github.com/KevinKipkorir254/study_notes_control_kit.git)
+
+## Usage
+### Prerequisites
+
+
+ - A ROS 2-compatible environment.
+ - A motor kit that can be order from (link to be provided).
+ - Dependencies:
+     - ROS 2 Humble
+     - Python 3.8+
+     - CMake 3.10+
+
+### Installation
+
+1. Clone the repository in a ROS2 workspace:
+
+```bash
+git clone https://github.com/KevinKipkorir254/control_kit_ws.git
+```
+2. Build and source the ROS2 workspace:
+
+```bash
+colcon build
+source install/setup.bash
+```
+
+### Running the System
+
+In each package, there is a readme on how to implement the system.
+
+## Contributions
+
+We welcome contributions! Please refer to the CONTRIBUTING.md file for guidelines.
+
 
 
 
