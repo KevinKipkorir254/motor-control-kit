@@ -3,8 +3,6 @@ Motor kit a tool to practice control theory, system Identification, filter desig
 
 ![MOTR KIT](/encoded_dc_motor_kit_kalman_filters/documentation/images/MOTOR%20KIT.png)
 
-The design process can be found in the following github page. [DESIGN DOCUMENTATION](https://github.com/KevinKipkorir254/study_notes_control_kit.git)
-
 ## Features
 
 
