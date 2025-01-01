@@ -28,5 +28,9 @@ The architecture of the Motor Kit is modular and organized for easy customizatio
   
 ![ROS2 ARCHITECTURE](/encoded_dc_motor_kit_kalman_filters/documentation/images/DESIGN%20SCHEME.png)
 
+## Design Documentation
+
+Detailed design documentation is available at [DOCUMENTATION](https://github.com/KevinKipkorir254/study_notes_control_kit.git)
+
 
 
