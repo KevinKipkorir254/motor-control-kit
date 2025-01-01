@@ -3,10 +3,6 @@ Motor kit a tool to practice control theory, system Identification, filter desig
 
 ![MOTR KIT](/encoded_dc_motor_kit_kalman_filters/documentation/images/MOTOR%20KIT.png)
 
-Here is a layout of the the architecture.
-
-![ROS2 ARCHITECTURE](/encoded_dc_motor_kit_kalman_filters/documentation/images/DESIGN%20SCHEME.png)
-
 The design process can be found in the following github page. [DESIGN DOCUMENTATION](https://github.com/KevinKipkorir254/study_notes_control_kit.git)
 
 ## Features
@@ -31,6 +27,8 @@ The architecture of the Motor Kit is modular and organized for easy customizatio
     - *Classical filters*: For implementation of low pass filters.
     - *Kalman Filters*: For optimal estimation of system states.
     - *State Observers*: To reconstruct unmeasured states.
+  
+![ROS2 ARCHITECTURE](/encoded_dc_motor_kit_kalman_filters/documentation/images/DESIGN%20SCHEME.png)
 
 
 
