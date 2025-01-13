@@ -64,10 +64,10 @@ install(
   DESTINATION include
 )
 
-install(
-  DIRECTORY launch config
-  DESTINATION share/${PROJECT_NAME}
-)
+#install(
+#  DIRECTORY launch config
+#  DESTINATION share/${PROJECT_NAME}
+#)
 
 # install(PROGRAMS
 #   ${PROJECT_NAME}/slider_control.py
