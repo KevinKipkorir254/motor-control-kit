@@ -1,0 +1,19 @@
+/**:
+  ros__parameters:
+    model_predictive_inputs:
+      # Define system matrices discrete matrix
+      Ap: [0.8874, 0.0511, -1.7835, 0.1788]
+      Bp: [0.0024, 0.0386]
+      Cp: [1.0, 0.0]
+      Dp: 0.0
+
+        # Prediction and control horizon
+      Np: 20.0
+      Nc: 10.0
+
+        # Initial control input
+      initial_input: 0.0
+      initial_output: 0.0
+
+        #control power
+      r_w: 0.0
