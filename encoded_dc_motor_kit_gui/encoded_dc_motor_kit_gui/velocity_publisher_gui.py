@@ -34,12 +34,12 @@ class EffortControlGUI:
         # Slider for setting effort value
         self.slider = tk.Scale(
             self.root,
-            from_=-2.0,
-            to=2.0,
+            from_=-10.0,
+            to=10.0,
             orient="horizontal",
             label="Velocity Value",
             length=300,
-            resolution=0.1,  # Set step size to 0.1
+            resolution=1,  # Set step size to 0.1
             command=self.publish_value,  # Publish whenever slider changes
         )
         self.slider.pack(pady=20)

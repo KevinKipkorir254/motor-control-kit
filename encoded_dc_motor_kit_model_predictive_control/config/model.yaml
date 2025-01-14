@@ -16,4 +16,4 @@
       initial_output: 0.0
 
         #control power
-      r_w: 0.0
+      r_w: 5.0
