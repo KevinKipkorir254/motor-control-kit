@@ -27,6 +27,23 @@ ros2 launch encoded_dc_motor_kit_description  motor_kit_server.launch.py
 ros2 run encoded_dc_motor_kit_state_observers state_observer
 ```
 
+## Topics involved
+
+**Debug mode off**
+ - state_observer
+
+**Debug mode on**
+ - state_observer
+ - A_publisher
+ - B_publisher
+ - K_publisher
+ - A_B_publisher
+
+**Debug mode setting**
+```cpp
+const int debug_mode = 0;
+```
+
 ## 3. Start Data Visualization
 
 Use PlotJuggler to monitor real-time data and analyze system performance:

@@ -8,6 +8,8 @@
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
+const int debug_mode = 0;
+
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
@@ -78,35 +80,47 @@ public:
         Eigen::Vector2d A_result = (A_ * x_hat);
 
         // publish a result
-        auto A_message = std_msgs::msg::Float64MultiArray();
-        A_message.data.push_back(A_result(0));
-        A_message.data.push_back(A_result(1));
-        A_publisher_->publish(A_message);
+        if (debug_mode)
+        {
+            auto A_message = std_msgs::msg::Float64MultiArray();
+            A_message.data.push_back(A_result(0));
+            A_message.data.push_back(A_result(1));
+            A_publisher_->publish(A_message);
+        }
 
         // Solve for B
         Eigen::Vector2d B_result = (B_ * input_voltage_);
 
         // publis b result
-        auto B_message = std_msgs::msg::Float64MultiArray();
-        B_message.data.push_back(B_result(0));
-        B_message.data.push_back(B_result(1));
-        B_publisher_->publish(B_message);
+        if (debug_mode)
+        {
+            auto B_message = std_msgs::msg::Float64MultiArray();
+            B_message.data.push_back(B_result(0));
+            B_message.data.push_back(B_result(1));
+            B_publisher_->publish(B_message);
+        }
 
         Eigen::Vector2d A_B = A_result + B_result;
 
         // publish A_B result
-        auto A_B_message = std_msgs::msg::Float64MultiArray();
-        A_B_message.data.push_back(A_B(0));
-        A_B_message.data.push_back(A_B(1));
-        A_B_publisher_->publish(A_B_message);
+        if (debug_mode)
+        {
+            auto A_B_message = std_msgs::msg::Float64MultiArray();
+            A_B_message.data.push_back(A_B(0));
+            A_B_message.data.push_back(A_B(1));
+            A_B_publisher_->publish(A_B_message);
+        }
 
         // solve for C
         double y_hat = C_ * x_hat;
 
         // publish as  k result
-        auto K_message = std_msgs::msg::Float64MultiArray();
-        K_message.data.push_back(y_hat);
-        K_publisher_->publish(K_message);
+        if (debug_mode)
+        {
+            auto K_message = std_msgs::msg::Float64MultiArray();
+            K_message.data.push_back(y_hat);
+            K_publisher_->publish(K_message);
+        }
 
         // using the ks
         Eigen::Vector2d k_result = k_e_ * (y_outputs_(0) - y_hat);

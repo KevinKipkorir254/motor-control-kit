@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # KALMAN FILTER 
 
 The Kalman filter is a powerful recursive algorithm used for estimating the state of a dynamic system. By combining a mathematical model of the system with noisy measurements, it provides an optimal estimate of the system's state, minimizing the effects of noise and uncertainty. Kalman filters are widely applied in control systems, navigation, and signal processing due to their ability to handle uncertainties effectively.
@@ -12,8 +11,6 @@ In this package, we employ three different models during the prediction stage:
 ![KALMAN FILTER](/encoded_dc_motor_kit_kalman_filters/documentation/images/kalman%20filter%20flowchart.png)
 
 
-=======
->>>>>>> parent of 681ba09 ("added a kalman filter README")
 ## RUNNING THE KIT WITH THE KALMAN FILTERS WITH DIFERENT MODELS
 
 Start RVIZ
