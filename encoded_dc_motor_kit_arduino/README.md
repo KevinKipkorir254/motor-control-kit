@@ -7,11 +7,11 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 ## GPIO Pinouts for Control
 
 
-| Function | GPIO Pin |
-| :-------- | :--------: |
-| Encoder Channel A |	GPIO 39
-| Encoder Channel B	| GPIO 36
-| Motor Control - IN1 | GPIO 5
-| Motor Control - IN2 | GPIO 4
-| Motor Control - Enable | GPIO 15
+| Function | GPIO Pin | Motor cable colour |
+| :-------- | :--------: | :--------: |
+| Encoder Channel A |	GPIO 39(VP) | yellow |
+| Encoder Channel B	| GPIO 36(VN) | dark-green |
+| Motor Control - IN1 | GPIO 5 | N/A |
+| Motor Control - IN2 | GPIO 4 | N/A |
+| Motor Control - Enable | GPIO 15 | N/A |
 </div>
