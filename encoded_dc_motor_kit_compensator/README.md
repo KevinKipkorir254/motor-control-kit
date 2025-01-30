@@ -60,7 +60,7 @@ $$
 | Peak Time| 4.43633 | |
 | Steady state error| 2.28 | |
 
-*N/B: the step test is carried out from 2-3 since the lead compensator does not behave well at reference of one also since the the rang0-90 V of the motor have no effect in increasing the velocity if the motor is at zero. Inquire if this is correct?*
+*N/B: the step test is carried out from 2-3 since the lead compensator does not behave well at reference of one also since the the range 0-90 V of the motor has no effect in increasing the velocity if the motor is at zero. Inquire if this is correct?*
 </div>
 
 ## Comparison step response
