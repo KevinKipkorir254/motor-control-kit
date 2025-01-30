@@ -30,14 +30,14 @@ $$
 
 | Parameter | value | comment |
 | :-------- | :--------: | :--------: |
-| Rise time | 0.1390 | |
-| Settling time |0.6708 | |
-| Settling min | 0.7195 | |
-| Settling max | 0.9111 | |
-| overshoot | 15.8230 | |
+| Rise time | 0.1430 | |
+| Settling time | 0.6708 | |
+| Settling min | 2.1559 | |
+| Settling max | 2.4842 | |
+| overshoot | 5.2680 | |
 | undershoot| 0 | |
-| Peak| 0.9111 | |
-| Peak Time| 0.9111 | |
+| Peak| 2.4842 | |
+| Peak Time| 0.3100 | |
 | Steady state error| 0.8 | |
 
 </div>
@@ -48,7 +48,7 @@ $$
 
 <div align="center">
 
-| Function | GPIO Pin | comment|
+| Function | Value | comment|
 | :-------- | :--------: | :--------: |
 | Rise time | 0.0844 | |
 | Settling time | 15.9894 | |
@@ -59,6 +59,24 @@ $$
 | Peak| 3.248591 | |
 | Peak Time| 4.43633 | |
 | Steady state error| 2.28 | |
+
+</div>
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.1430 | 0.0844 | |
+| Settling time | 0.6708 | 15.9894 | since oscillatory it would not settle |
+| Settling min | 2.1559 | 1.9377 | |
+| Settling max | 2.4842 | 3.2485 | |
+| overshoot | 5.2680 | 41.44079 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.4842 | 3.248591 | |
+| Peak Time| 0.3100 | 4.43633 | |
+| Steady state| 2.4 | 2.28 | |
 
 </div>
 
