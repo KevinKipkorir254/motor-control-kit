@@ -14,6 +14,54 @@ Key features of a lead compensator:
 
 ![LEAD COMPENSTOR](/encoded_dc_motor_kit_compensator/documentation/images/lead%20compensator.png)
 
+## matlab design parameter expectations
+
+![Matlab design](/encoded_dc_motor_kit_compensator/documentation/images/lead_compensator/matlab_design.png)
+
+
+lead compensator equation:
+<div align="center">
+
+$$
+lead-compensator = \frac{ 136.9*(s + 20.95)}{s + 16.8}
+$$
+
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.1390 | |
+| Settling time |0.6708 | |
+| Settling min | 0.7195 | |
+| Settling max | 0.9111 | |
+| overshoot | 15.8230 | |
+| undershoot| 0 | |
+| Peak| 0.9111 | |
+| Peak Time| 0.9111 | |
+| Steady state error| 0.8 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lead_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | GPIO Pin | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0844 | |
+| Settling time | 15.9894 | |
+| Settling min | 1.9377 | |
+| Settling max | 3.2485 | |
+| overshoot | 41.44079 | |
+| undershoot| 0 | |
+| Peak| 3.248591 | |
+| Peak Time| 4.43633 | |
+| Steady state error| 2.28 | |
+
+</div>
+
 ## RUNNING THE KIT WITH THE LEAD COMPENSATOR
 
 ## 1. Start RViz (Optional Visualization)

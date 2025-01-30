@@ -28,5 +28,5 @@
 | undershoot| 0 | |
 | Peak| 3.248591 | |
 | Peak Time| 4.43633 | |
-| Steady state error| 0.8 | |
+| Steady state error| 2.28 | |
 </div>
