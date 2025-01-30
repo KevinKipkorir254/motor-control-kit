@@ -81,6 +81,61 @@ $$
 
 </div>
 
+## Lag compensator
+
+## matlab design parameter expectations
+![LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/lag_compensator.png)
+
+Lag compensator equation:
+<div align="center">
+
+$$
+lag-compensator = \frac{ 12460*(s + 0.004516)}{s + 0.09673}
+$$
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0133 | |
+| Settling time | 0.3901 | |
+| Settling min | 2.4221 | |
+| Settling max | 3.7583 | |
+| overshoot | 26.1213 | |
+| undershoot| 0 | |
+| Peak| 3.7583 | |
+| Peak Time| 3.7583 | |
+| Steady state error| 0.03 | |
+
+</div>
+
+
+
+## Lead-lag compensator
+![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/lead_lag_compensator.png)
+Lead-lag compensator equation:
+<div align="center">
+
+$$
+lead-lag-compensator = \frac{ 1870*(s + 20)*(s + 0.001939)}{(s + 16.97)*(s + 0.1013)}
+$$
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0349 | |
+| Settling time | 0.5994 | |
+| Settling min | 2.5435 | |
+| Settling max | 3.5203 | |
+| overshoot | 21.8334 | |
+| undershoot| 0 | |
+| Peak| 3.5203 | |
+| Peak Time| 0.0800 | |
+| Steady state error| 2.92 | |
+
+</div>
+
+
+
 ## RUNNING THE KIT WITH THE LEAD COMPENSATOR
 
 ## 1. Start RViz (Optional Visualization)

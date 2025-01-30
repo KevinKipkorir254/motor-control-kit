@@ -10,10 +10,10 @@ num = [0.755];
 den = [1, 13.87, 34.91];
 gs = tf(num, den);
 
-num_lc = [1, 20.95];
-den_lc = [1, 16.8];
+num_lc = [1, 0.004516];
+den_lc = [1, 0.09673];
 gs_lc = tf(num_lc, den_lc);
-k = 136.69;
+k = 12460;
 gs_lc = series(k, gs_lc);
 
 gs_top = series(gs_lc, gs);
@@ -59,3 +59,4 @@ gs_lc_discrete = c2d(gs_lc, 0.01, 'tustin');
 disp('Discrete-time Transfer Function (Tustin method):');
 disp(gs_lc_discrete);
 ```
+
