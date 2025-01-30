@@ -127,3 +127,4 @@ The topics to subscribe to in PlotJuggler are provided in the image below:
 ![PLOT JUGGLER IMAGE](/encoded_dc_motor_kit_compensator/documentation/images/velocity_publisher.png)
 
 This setup allows you to observe critical parameters such as velocity commands, motor responses, and compensator actions, enabling thorough performance analysis
+
