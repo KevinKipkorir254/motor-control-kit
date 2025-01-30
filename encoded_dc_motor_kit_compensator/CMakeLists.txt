@@ -29,8 +29,16 @@ endif()
 add_executable(lead_compensator src/encoded_dc_motor_kit_lead_compensator.cpp)
 ament_target_dependencies(lead_compensator rclcpp std_msgs sensor_msgs)
 
+add_executable(lag_compensator src/encoded_dc_motor_kit_lag_compensator.cpp)
+ament_target_dependencies(lag_compensator rclcpp std_msgs sensor_msgs)
+
+add_executable(lag_lead_compensator src/encoded_dc_motor_kit_lead_lag_compensator.cpp)
+ament_target_dependencies(lag_lead_compensator rclcpp std_msgs sensor_msgs)
+
 install(TARGETS
   lead_compensator
+  lag_compensator
+  lag_lead_compensator
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
