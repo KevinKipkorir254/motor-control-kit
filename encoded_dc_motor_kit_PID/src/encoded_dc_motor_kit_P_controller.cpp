@@ -92,9 +92,7 @@ private:
 
         // replacing the values
         controller_input[0] = error;
-        controller_output[0] = controller_output[1] + input_coeffs[0] * controller_input[0] + input_coeffs[1] * controller_input[1];
-        controller_input[1] = controller_input[0];
-        controller_output[1] = controller_output[0];
+        controller_output[0] = input_coeffs[0] * controller_input[0];
 
         return controller_output[0];
     }
@@ -120,7 +118,7 @@ private:
 
     // coefficient storage
     double output_coeffs[2] = {1.0, 1.0};     // output coeffs y[k], y[k-1]
-    double input_coeffs[2] = {5.143, -5.143}; // input coeffs, u[], u[k-1]
+    double input_coeffs[2] = { 302.19, 0.0};  // input coeffs, u[], u[k-1]
     /*---------------------CONTROLLER INIT VALUES-------------------------*/
 
     size_t count_;
