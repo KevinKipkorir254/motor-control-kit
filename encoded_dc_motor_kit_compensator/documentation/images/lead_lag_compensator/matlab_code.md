@@ -10,15 +10,15 @@ num = [0.755];
 den = [1, 13.87, 34.91];
 gs = tf(num, den);
 
-num_lc = [1, 0.004516];
-den_lc = [1, 0.09673];
+num_lc = [1, 0.001939];
+den_lc = [1, 0.1013];
 gs_lc_1 = tf(num_lc, den_lc);
 
 num_lc = [1, 20];
 den_lc = [1, 16.97];
 gs_lc_2 = tf(num_lc, den_lc);
 
-k = 1870;
+k = 378.98;
 gs_lc = series( gs_lc_1, gs_lc_2);
 
 gs_top = series(gs_lc_1, gs_lc_2)
@@ -62,7 +62,7 @@ disp('Step Info (from 2 to 3):');
 disp(step_info);
 
 % Discretize gs_lc
-gs_lc_discrete = c2d(gs_top, 0.01, 'tustin');
+gs_lc_discrete = c2d(gs_top, 0.01, 'tustin')
 disp('Discrete-time Transfer Function (Tustin method):');
 disp(gs_lc_discrete);
 

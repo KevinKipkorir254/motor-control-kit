@@ -90,51 +90,120 @@ Lag compensator equation:
 <div align="center">
 
 $$
-lag-compensator = \frac{ 12460*(s + 0.004516)}{s + 0.09673}
+lag-compensator = \frac{ 306.7*(s + 0.006157)}{s + 0.05034}
 $$
 
 
 | Parameter | value | comment |
 | :-------- | :--------: | :--------: |
-| Rise time | 0.0133 | |
-| Settling time | 0.3901 | |
-| Settling min | 2.4221 | |
-| Settling max | 3.7583 | |
-| overshoot | 26.1213 | |
+| Rise time | 0.0889 | |
+| Settling time | 2.4150 | |
+| Settling min | 2.2401 | |
+| Settling max | 2.7582 | |
+| overshoot | 11.2518 | |
 | undershoot| 0 | |
-| Peak| 3.7583 | |
-| Peak Time| 3.7583 | |
-| Steady state error| 0.03 | |
+| Peak| 2.7582 | |
+| Peak Time| 0.2100 | |
+| Steady state | 3.0 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.07970 | |
+| Settling time | 7.2662 | |
+| Settling min | 2.07267 | |
+| Settling max | 3.8804 | |
+| overshoot |  46.1953 | |
+| undershoot| 0 | |
+| Peak| 3.88048 | |
+| Peak Time| 0.15697 | |
+| Steady state error| 2.6543 | |
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.0889 | 0.07970 | |
+| Settling time | 2.4150 | 7.2662 | |
+| Settling min | 2.2401 | 2.07267 | |
+| Settling max | 2.7582 | 3.8804 | |
+| overshoot | 11.2518 | 46.1953 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.7582 | 3.88048 | |
+| Peak Time| 0.2100 | 0.15697 | |
+| Steady state| 3.0 | 2.6543 | |
 
 </div>
 
 
-
 ## Lead-lag compensator
-![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/lead_lag_compensator.png)
+![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/lead_lag.png)
 Lead-lag compensator equation:
 <div align="center">
 
 $$
-lead-lag-compensator = \frac{ 1870*(s + 20)*(s + 0.001939)}{(s + 16.97)*(s + 0.1013)}
+lead-lag-compensator = \frac{ 129.3*(s + 20)*(s + 0.001939)}{(s + 16.97)*(s + 0.1013)}
 $$
 
 
 | Parameter | value | comment |
 | :-------- | :--------: | :--------: |
-| Rise time | 0.0349 | |
-| Settling time | 0.5994 | |
-| Settling min | 2.5435 | |
-| Settling max | 3.5203 | |
-| overshoot | 21.8334 | |
+| Rise time | 0.0732 | |
+| Settling time | 3.8688 | |
+| Settling min | 2.3160 | |
+| Settling max | 2.9246 | |
+| overshoot | 17.2034 | |
 | undershoot| 0 | |
-| Peak| 3.5203 | |
-| Peak Time| 0.0800 | |
-| Steady state error| 2.92 | |
+| Peak| 2.9246 | |
+| Peak Time| 0.1900 | |
+| Steady state error| N/A | |
 
 </div>
 
+## motor kit step response
 
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.097873 | |
+| Settling time | 3.0068 | |
+| Settling min | 2.01522 | |
+| Settling max | 3.05244 | |
+| overshoot | 35.42694 | |
+| undershoot| 0 | |
+| Peak|  3.05244 | |
+| Peak Time| 0.21667 | |
+| Steady state error| 2.26  | |
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.0732 | 0.097873 | |
+| Settling time | 3.8688 | 3.0068 | |
+| Settling min | 2.3160 | 2.01522 | |
+| Settling max | 2.9246 | 3.05244 | |
+| overshoot | 17.2034 | 35.42694 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.9246 | 3.05244 | |
+| Peak Time| 0.1900 | 0.21667 | |
+| Steady state| N/A | 2.26 | |
+
+</div>
 
 ## RUNNING THE KIT WITH THE LEAD COMPENSATOR
 
