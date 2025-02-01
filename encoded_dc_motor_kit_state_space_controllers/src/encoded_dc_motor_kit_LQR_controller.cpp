@@ -103,6 +103,8 @@ private:
         // replacing the values
         // computing the error
         state_space_total = ((error * gains_[0]));
+        double acceleration = (shaft_velocity - yn_1)/period.seconds();
+        state_space[1] = acceleration;
 
         double Khat_result = state_space[1] * gains_[1];
 

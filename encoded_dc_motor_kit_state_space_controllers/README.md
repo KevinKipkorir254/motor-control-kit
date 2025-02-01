@@ -107,6 +107,71 @@ Key Benefits:
 - *Ease of Tuning*: Adjust Q and R to prioritize performance or minimize control effort.
 
 LQR is especially useful for systems with multiple inputs and outputs (MIMO), as it provides an elegant way to handle these complexities.
+![pole placement controller design](/encoded_dc_motor_kit_state_space_controllers/documentation/images/LQR_controller/lqr_design.png)
+
+
+Gain controller equation:
+<div align="center">
+
+$$
+K = [ 102.5500   10.0746]
+$$
+
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.3226 | |
+| Settling time | 0.5621 | |
+| Settling min | 0.0183 | |
+| Settling max | 0.0202 | |
+| overshoot | 0 | |
+| undershoot| 1.6811e-17 | |
+| Peak| 0.0202 | |
+| Peak Time|1 | |
+| Steady state error| 0.2 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_state_space_controllers/documentation/images/LQR_controller/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.25697 | |
+| Settling time | 18.8233 | |
+| Settling min | 1.9348 | |
+| Settling max | 2.5627 | |
+| overshoot | 3.46984 | |
+| undershoot| 0 | |
+| Peak| 2.5627 | |
+| Peak Time| 0.51303 | |
+| Steady state error| 2.07346 | |
+
+</div>
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.3226 | 0.25697 | |
+| Settling time | 0.5621 | 18.8233 | since oscillatory it would not settle |
+| Settling min | 0.0183 | 1.9348 | |
+| Settling max | 0.0202 | 2.5627 | |
+| overshoot | 0 | 3.46984 | |
+| undershoot| 0 | 0 | |
+| Peak| 0.0202 | 2.5627 | |
+| Peak Time| 1 | 0.51303 | |
+| Steady state| 0.2 | 2.26 | |
+
+</div>
+
+
 
 
 ## RUNNING THE KIT WITH THE STATE-SPACE CONTROLLERS.
