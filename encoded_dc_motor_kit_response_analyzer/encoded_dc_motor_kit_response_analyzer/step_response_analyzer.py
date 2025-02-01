@@ -76,7 +76,7 @@ class StepResponseAnalyzer(Node):
             self.recording_started = True
 
             # Start a timer to wait for 10 seconds before calculating metrics
-            self.create_timer(10.0, self.enable_metrics_calculation)
+            self.create_timer(20.0, self.enable_metrics_calculation)
 
     def output_callback(self, msg):
         """Callback to capture system output (filtered velocity)."""
