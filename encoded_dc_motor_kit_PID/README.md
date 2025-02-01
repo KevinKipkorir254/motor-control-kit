@@ -155,10 +155,6 @@ The PID controller adds derivative action to predict future errors and dampen os
 Gain controller equation:
 <div align="center">
 
-$$
-PI controller = \frac{205.25*(s + 0.06618)}{s}
-$$
-
 
 
 | Parameter | value | comment |
