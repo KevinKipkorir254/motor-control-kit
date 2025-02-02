@@ -21,6 +21,7 @@ public:
     {
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
         filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
+        state_space_total_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/state_space_total", 10);
         subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadCompensator::update_reference_velocity, this, std::placeholders::_1));
         joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
         previous_time = this->get_clock()->now();
@@ -100,14 +101,21 @@ private:
         rclcpp::Duration period = current_time - previous_time;
         previous_time = current_time;
 
-        state_space[0] = shaft_velocity;
-        state_space[1] = shaft_velocity - yn_1;
+        state_space[0] = shaft_velocity;  //velocity
+        state_space[1] = (shaft_velocity - yn_1)/period.seconds();  //
         state_space_total = ((state_space[0] * gains_[0]) + (state_space[1] * gains_[1]));
 
         error_integral += error * period.seconds();
         double Khat_result = error_integral * gains_[2];
 
-        double controller_output = Khat_result - state_space_total;
+        //publish state_space[0] * gains_[0]  and state_space[1] * gains_[1] and  khat_result
+        auto state_space_total_message = std_msgs::msg::Float64MultiArray();
+        state_space_total_message.data.push_back(state_space[0] * gains_[0]);
+        state_space_total_message.data.push_back(state_space[1] * gains_[1]);
+        state_space_total_message.data.push_back(Khat_result);
+        state_space_total_publisher_->publish(state_space_total_message);
+
+        double controller_output = Khat_result + (state_space_total);
 
         return controller_output;
     }
@@ -138,6 +146,10 @@ private:
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_publisher_;
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
+
+    // create two pblishers to monitor state[0]*gain[0] and state[1]*gain[1]
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr state_space_total_publisher_;
+
     volatile double reference_velocity;
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
@@ -148,7 +160,7 @@ private:
     // DATA STORAGE
     double state_space[2] = {0.0, 0.0};
     double state_space_total = 0.0;
-    double gains_[3] = {-25.0464, -14.3974, 26.4901};
+    double gains_[3] = {-34.3179, -14.3974, 17.2185};
     double error_integral = 0.0;
     /*---------------------CONTROLLER INIT VALUES-------------------------*/
 

@@ -17,7 +17,74 @@ Pole placement is a state-feedback control technique where the system poles (eig
  - *Direct State Feedback*: Utilize full-state feedback to compute the required control input.
 
 
-The controller gain matrix, $K_e$, is computed using linear algebraic methods, such as Ackermann's formula, to meet desired specifications.
+The controller gain matrix, $K_e$, is computed using linear algebraic methods, such as Ackermann's formula, to meet desired specifications.## matlab design parameter expectations
+
+![pole placement controller design](/encoded_dc_motor_kit_state_space_controllers/documentation/images/pole_placement_controller/design_output.png)
+
+
+Gain controller equation:
+<div align="center">
+
+$$
+K = [ -34.3179  -14.3974   17.2185]
+$$
+
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.9535 | |
+| Settling time | 4.2835 | |
+| Settling min | 2.7073 | |
+| Settling max | 3.2242 | |
+| overshoot | 7.5137 | |
+| undershoot| 0 | |
+| Peak| 3.2242 | |
+| Peak Time| 1.6800 | |
+| Steady state error| 3.0 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_state_space_controllers/documentation/images/pole_placement_controller/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 3.27242 | |
+| Settling time | 10.09793 | |
+| Settling min | 2.6599 | |
+| Settling max | 3.06337 | |
+| overshoot | 3.46984 | |
+| undershoot| 0 | |
+| Peak| 3.06337 | |
+| Peak Time| 8.83445 | |
+| Steady state error| 2.96064 | |
+
+*N/B: the step test is carried out from 2-3 since the lead compensator does not behave well at reference of one also since the the range 0-90 V of the motor has no effect in increasing the velocity if the motor is at zero. Inquire if this is correct?*
+</div>
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.9535 | 3.27242 | |
+| Settling time | 4.2835 | 10.09793 | since oscillatory it would not settle |
+| Settling min | 2.7073 | 2.6599 | |
+| Settling max | 3.2242 | 3.06337 | |
+| overshoot | 7.5137 | 3.46984 | |
+| undershoot| 0 | 0 | |
+| Peak| 3.2242 | 3.06337 | |
+| Peak Time| 1.6800 | 8.83445 | |
+| Steady state| 3.0 | 2.96064 | |
+
+</div>
+
+
 
 
 ## Quadratic Optimal Regulator Systems (LQR)
@@ -40,6 +107,71 @@ Key Benefits:
 - *Ease of Tuning*: Adjust Q and R to prioritize performance or minimize control effort.
 
 LQR is especially useful for systems with multiple inputs and outputs (MIMO), as it provides an elegant way to handle these complexities.
+![pole placement controller design](/encoded_dc_motor_kit_state_space_controllers/documentation/images/LQR_controller/lqr_design.png)
+
+
+Gain controller equation:
+<div align="center">
+
+$$
+K = [ 102.5500   10.0746]
+$$
+
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.3226 | |
+| Settling time | 0.5621 | |
+| Settling min | 0.0183 | |
+| Settling max | 0.0202 | |
+| overshoot | 0 | |
+| undershoot| 1.6811e-17 | |
+| Peak| 0.0202 | |
+| Peak Time|1 | |
+| Steady state error| 0.2 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_state_space_controllers/documentation/images/LQR_controller/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.25697 | |
+| Settling time | 18.8233 | |
+| Settling min | 1.9348 | |
+| Settling max | 2.5627 | |
+| overshoot | 3.46984 | |
+| undershoot| 0 | |
+| Peak| 2.5627 | |
+| Peak Time| 0.51303 | |
+| Steady state error| 2.07346 | |
+
+</div>
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.3226 | 0.25697 | |
+| Settling time | 0.5621 | 18.8233 | since oscillatory it would not settle |
+| Settling min | 0.0183 | 1.9348 | |
+| Settling max | 0.0202 | 2.5627 | |
+| overshoot | 0 | 3.46984 | |
+| undershoot| 0 | 0 | |
+| Peak| 0.0202 | 2.5627 | |
+| Peak Time| 1 | 0.51303 | |
+| Steady state| 0.2 | 2.26 | |
+
+</div>
+
+
 
 
 ## RUNNING THE KIT WITH THE STATE-SPACE CONTROLLERS.

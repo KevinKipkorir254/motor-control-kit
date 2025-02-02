@@ -14,6 +14,197 @@ Key features of a lead compensator:
 
 ![LEAD COMPENSTOR](/encoded_dc_motor_kit_compensator/documentation/images/lead%20compensator.png)
 
+## matlab design parameter expectations
+
+![Matlab design](/encoded_dc_motor_kit_compensator/documentation/images/lead_compensator/matlab_design.png)
+
+
+lead compensator equation:
+<div align="center">
+
+$$
+lead-compensator = \frac{ 136.9*(s + 20.95)}{s + 16.8}
+$$
+
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.1430 | |
+| Settling time | 0.6708 | |
+| Settling min | 2.1559 | |
+| Settling max | 2.4842 | |
+| overshoot | 5.2680 | |
+| undershoot| 0 | |
+| Peak| 2.4842 | |
+| Peak Time| 0.3100 | |
+| Steady state error| 0.8 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lead_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0844 | |
+| Settling time | 15.9894 | |
+| Settling min | 1.9377 | |
+| Settling max | 3.2485 | |
+| overshoot | 41.44079 | |
+| undershoot| 0 | |
+| Peak| 3.248591 | |
+| Peak Time| 4.43633 | |
+| Steady state error| 2.28 | |
+
+*N/B: the step test is carried out from 2-3 since the lead compensator does not behave well at reference of one also since the the range 0-90 V of the motor has no effect in increasing the velocity if the motor is at zero. Inquire if this is correct?*
+</div>
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.1430 | 0.0844 | |
+| Settling time | 0.6708 | 15.9894 | since oscillatory it would not settle |
+| Settling min | 2.1559 | 1.9377 | |
+| Settling max | 2.4842 | 3.2485 | |
+| overshoot | 5.2680 | 41.44079 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.4842 | 3.248591 | |
+| Peak Time| 0.3100 | 4.43633 | |
+| Steady state| 2.4 | 2.28 | |
+
+</div>
+
+## Lag compensator
+
+## matlab design parameter expectations
+![LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/lag_compensator.png)
+
+Lag compensator equation:
+<div align="center">
+
+$$
+lag-compensator = \frac{ 306.7*(s + 0.006157)}{s + 0.05034}
+$$
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0889 | |
+| Settling time | 2.4150 | |
+| Settling min | 2.2401 | |
+| Settling max | 2.7582 | |
+| overshoot | 11.2518 | |
+| undershoot| 0 | |
+| Peak| 2.7582 | |
+| Peak Time| 0.2100 | |
+| Steady state | 3.0 | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.07970 | |
+| Settling time | 7.2662 | |
+| Settling min | 2.07267 | |
+| Settling max | 3.8804 | |
+| overshoot |  46.1953 | |
+| undershoot| 0 | |
+| Peak| 3.88048 | |
+| Peak Time| 0.15697 | |
+| Steady state error| 2.6543 | |
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.0889 | 0.07970 | |
+| Settling time | 2.4150 | 7.2662 | |
+| Settling min | 2.2401 | 2.07267 | |
+| Settling max | 2.7582 | 3.8804 | |
+| overshoot | 11.2518 | 46.1953 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.7582 | 3.88048 | |
+| Peak Time| 0.2100 | 0.15697 | |
+| Steady state| 3.0 | 2.6543 | |
+
+</div>
+
+
+## Lead-lag compensator
+![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/lead_lag.png)
+Lead-lag compensator equation:
+<div align="center">
+
+$$
+lead-lag-compensator = \frac{ 129.3*(s + 20)*(s + 0.001939)}{(s + 16.97)*(s + 0.1013)}
+$$
+
+
+| Parameter | value | comment |
+| :-------- | :--------: | :--------: |
+| Rise time | 0.0732 | |
+| Settling time | 3.8688 | |
+| Settling min | 2.3160 | |
+| Settling max | 2.9246 | |
+| overshoot | 17.2034 | |
+| undershoot| 0 | |
+| Peak| 2.9246 | |
+| Peak Time| 0.1900 | |
+| Steady state error| N/A | |
+
+</div>
+
+## motor kit step response
+
+![Motor kit step response](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/step_response_plot.png)
+
+<div align="center">
+
+| Function | Value | comment|
+| :-------- | :--------: | :--------: |
+| Rise time | 0.097873 | |
+| Settling time | 3.0068 | |
+| Settling min | 2.01522 | |
+| Settling max | 3.05244 | |
+| overshoot | 35.42694 | |
+| undershoot| 0 | |
+| Peak|  3.05244 | |
+| Peak Time| 0.21667 | |
+| Steady state error| 2.26  | |
+
+## Comparison step response
+
+<div align="center">
+
+| Function | Expected | Reality| comment|
+| :-------- | :--------: | :--------: |:--------: |
+| Rise time | 0.0732 | 0.097873 | |
+| Settling time | 3.8688 | 3.0068 | |
+| Settling min | 2.3160 | 2.01522 | |
+| Settling max | 2.9246 | 3.05244 | |
+| overshoot | 17.2034 | 35.42694 | |
+| undershoot| 0 | 0 | |
+| Peak| 2.9246 | 3.05244 | |
+| Peak Time| 0.1900 | 0.21667 | |
+| Steady state| N/A | 2.26 | |
+
+</div>
+
 ## RUNNING THE KIT WITH THE LEAD COMPENSATOR
 
 ## 1. Start RViz (Optional Visualization)
@@ -60,3 +251,4 @@ The topics to subscribe to in PlotJuggler are provided in the image below:
 ![PLOT JUGGLER IMAGE](/encoded_dc_motor_kit_compensator/documentation/images/velocity_publisher.png)
 
 This setup allows you to observe critical parameters such as velocity commands, motor responses, and compensator actions, enabling thorough performance analysis
+

@@ -27,7 +27,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(p_controller src/encoded_dc_motor_kit_lead_compensator.cpp)
+add_executable(p_controller src/encoded_dc_motor_kit_P_controller.cpp)
 ament_target_dependencies(p_controller rclcpp std_msgs sensor_msgs geometry_msgs)
 
 

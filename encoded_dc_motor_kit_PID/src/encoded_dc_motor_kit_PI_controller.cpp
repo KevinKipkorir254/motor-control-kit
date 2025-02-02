@@ -121,7 +121,7 @@ private:
 
     // coefficient storage
     double output_coeffs[2] = {1.0, 1.0};     // output coeffs y[k], y[k-1]
-    double input_coeffs[2] = {4.728, -4.529}; // input coeffs, u[k], u[k-1]
+    double input_coeffs[2] = {205.3, -205.2}; // input coeffs, u[k], u[k-1]
     /*---------------------CONTROLLER INIT VALUES-------------------------*/
 
     size_t count_;

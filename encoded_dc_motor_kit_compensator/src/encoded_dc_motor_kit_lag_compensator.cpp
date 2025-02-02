@@ -88,8 +88,8 @@ private:
     double update_control_value(double shaft_velocity)
     {
         // G_C COMPENSATOR INITIALISATION
-        double G_c_output[2] = {0.00, 0.845};
-        double G_c_input[2] = { 139.3, -112.9};
+        double G_c_output[2] = {0.00, 0.9995};
+        double G_c_input[2] = { 306.6, -306.6};
 
         // THE INPUT OUPTU DATA
         double u_gc[3] = {0.0, 0.0, 0.0};

@@ -87,21 +87,14 @@ private:
 
     double update_control_value(double shaft_velocity)
     {
-        // G_C COMPENSATOR INITIALISATION
-        double G_c_output[2] = {0.00, 0.845};
-        double G_c_input[2] = { 139.3, -112.9};
-
-        // THE INPUT OUPTU DATA
-        double u_gc[3] = {0.0, 0.0, 0.0};
-        double y_gc[3] = {0.0, 0.0, 0.0};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
-        u_gc[0] = error;
-        y_gc[1] = y_gc[0];
-        y_gc[0] = G_c_output[1] * y_gc[1] + G_c_input[0] * u_gc[0] + G_c_input[1] * u_gc[1];
-        u_gc[1] = u_gc[0];
 
-        return y_gc[0];
+        // replacing the values
+        controller_input[0] = error;
+        controller_output[0] = input_coeffs[0] * controller_input[0];
+
+        return controller_output[0];
     }
 
     void update_reference_velocity(const std_msgs::msg::Float64MultiArray &msg)
@@ -118,6 +111,16 @@ private:
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
     volatile double yn_1 = 0.0, xn_1 = 0.0;
+    /*---------------------CONTROLLER INIT VALUES-------------------------*/
+    // DATA STORAGE
+    double controller_input[3] = {0.0, 0.0, 0.0};  // u[k], u[k-1], u[k-2]
+    double controller_output[3] = {0.0, 0.0, 0.0}; // y[k], y[k-1], y[k-2]
+
+    // coefficient storage
+    double output_coeffs[2] = {1.0, 1.0};     // output coeffs y[k], y[k-1]
+    double input_coeffs[2] = { 302.19, 0.0};  // input coeffs, u[], u[k-1]
+    /*---------------------CONTROLLER INIT VALUES-------------------------*/
+
     size_t count_;
 };
 
