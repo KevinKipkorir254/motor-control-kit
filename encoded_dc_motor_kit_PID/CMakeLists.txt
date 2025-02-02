@@ -42,12 +42,24 @@ ament_target_dependencies(pid_controller rclcpp std_msgs sensor_msgs geometry_ms
 add_executable(two_dof_pid_controller src/encoded_dc_motor_kit_2DOF_PID_controller.cpp)
 ament_target_dependencies(two_dof_pid_controller rclcpp std_msgs sensor_msgs geometry_msgs)
 
+add_executable(p_controller_position src/encoded_dc_motor_kit_P_controller_position.cpp)
+ament_target_dependencies(p_controller_position rclcpp std_msgs sensor_msgs geometry_msgs)
+
+add_executable(pi_controller_position src/encoded_dc_motor_kit_PI_controller_position.cpp)
+ament_target_dependencies(pi_controller_position rclcpp std_msgs sensor_msgs geometry_msgs)
+
+add_executable(pid_controller_position src/encoded_dc_motor_kit_PID_controller_position.cpp)
+ament_target_dependencies(pid_controller_position rclcpp std_msgs sensor_msgs geometry_msgs)
+
 
 install(TARGETS
   p_controller
   pi_controller
   pid_controller
   two_dof_pid_controller
+  p_controller_position
+  pi_controller_position
+  pid_controller_position
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
