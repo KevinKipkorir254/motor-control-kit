@@ -35,10 +35,22 @@ ament_target_dependencies(lag_compensator rclcpp std_msgs sensor_msgs)
 add_executable(lag_lead_compensator src/encoded_dc_motor_kit_lead_lag_compensator.cpp)
 ament_target_dependencies(lag_lead_compensator rclcpp std_msgs sensor_msgs)
 
+add_executable(lead_compensator_position src/encoded_dc_motor_kit_lead_compensator_position.cpp)
+ament_target_dependencies(lead_compensator_position rclcpp std_msgs sensor_msgs)
+
+add_executable(lag_compensator_position src/encoded_dc_motor_kit_lag_compensator_position.cpp)
+ament_target_dependencies(lag_compensator_position rclcpp std_msgs sensor_msgs)
+
+add_executable(lag_lead_compensator_position src/encoded_dc_motor_kit_lead_lag_compensator_position.cpp)
+ament_target_dependencies(lag_lead_compensator_position rclcpp std_msgs sensor_msgs)
+
 install(TARGETS
   lead_compensator
   lag_compensator
   lag_lead_compensator
+  lead_compensator_position
+  lag_compensator_position
+  lag_lead_compensator_position
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
