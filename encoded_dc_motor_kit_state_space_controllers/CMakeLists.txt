@@ -30,6 +30,10 @@ endif()
 add_executable(pole_placement_contoller src/encoded_dc_motor_kit_pole_placement_controller.cpp)
 ament_target_dependencies(pole_placement_contoller rclcpp std_msgs sensor_msgs geometry_msgs)
 
+
+add_executable(pole_placement_contoller_position src/encoded_dc_motor_kit_pole_placement_controller_position.cpp)
+ament_target_dependencies(pole_placement_contoller_position rclcpp std_msgs sensor_msgs geometry_msgs)
+
 #encoded_dc_motor_kit_LQR_controller.cpp
 
 add_executable(LQR_contoller src/encoded_dc_motor_kit_LQR_controller.cpp)
@@ -37,6 +41,7 @@ ament_target_dependencies(LQR_contoller rclcpp std_msgs sensor_msgs geometry_msg
 
 install(TARGETS
     pole_placement_contoller
+    pole_placement_contoller_position
     LQR_contoller
   DESTINATION lib/${PROJECT_NAME})
 
