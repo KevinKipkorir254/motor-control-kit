@@ -140,22 +140,39 @@ namespace encoded_dc_motor_kit_hardware_interface
       RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), GREEN_TEXT ": %d" RESET_COLOR, signed_data);
     }
 
-    double position = (((double)signed_data) / 500)* 2 * M_PI; //convert to radians
+    // Convert to radians
+    double position = (((double)signed_data) / 500) * 2 * M_PI;
 
-    // calculate velocity
-    double time_interval = period.seconds(); // get the time interval in seconds
-    double velocity = (position - previous_position) / time_interval;
+    // Calculate time interval
+    double time_interval = period.seconds();
+
+    // Handle overflow when calculating velocity
+    double delta_position = position - previous_position;
+
+    // Check for overflow/underflow conditions
+    if (delta_position > (32767.0 / 500) * 2 * M_PI) // Overflow condition
+    {
+        delta_position -= (65536.0 / 500) * 2 * M_PI; 
+    }
+    else if (delta_position < (-32768.0 / 500) * 2 * M_PI) // Underflow condition
+    {
+        delta_position += (65536.0 / 500) * 2 * M_PI;
+    }
+
+    // Compute velocity
+    double velocity = delta_position / time_interval;
     previous_position = position;
 
+    // Validate velocity range
     if ((velocity < 20.0) && (velocity > -20.0))
     {
-      position_state[0] = position;
-      velocity_state[0] = velocity;
+        position_state[0] = position;
+        velocity_state[0] = velocity;
     }
-    else //state remains the same
+    else // Keep previous state
     {
-      position_state[0] = position_state[0];
-      velocity_state[0] = velocity_state[0];
+        position_state[0] = position_state[0];
+        velocity_state[0] = velocity_state[0];
     }
 
     return hardware_interface::return_type::OK;
