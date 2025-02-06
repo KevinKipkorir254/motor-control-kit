@@ -88,18 +88,17 @@ private:
     double update_control_value(double shaft_velocity)
     {
         // G_C COMPENSATOR INITIALISATION
-        double G_c_output[2] = {0.00, 0.9995};
-        double G_c_input[2] = { 306.6, -306.6};
-
-        // THE INPUT OUPTU DATA
-        double u_gc[3] = {0.0, 0.0, 0.0};
-        double y_gc[3] = {0.0, 0.0, 0.0};
+        double G_c_output[2] = {0.00, 0.9999089};
+        double G_c_input[2] = {170.904, -170.754};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
-        u_gc[0] = error;
+        y_gc[0] = G_c_output[1] * y_gc[1] + G_c_input[0] * error + G_c_input[1] * u_gc[1];
+
+        /// update previus error
+        u_gc[1] = error;
+
+        // update previous output
         y_gc[1] = y_gc[0];
-        y_gc[0] = G_c_output[1] * y_gc[1] + G_c_input[0] * u_gc[0] + G_c_input[1] * u_gc[1];
-        u_gc[1] = u_gc[0];
 
         return y_gc[0];
     }
@@ -119,6 +118,10 @@ private:
     volatile double shaft_velocity_ = 0.0;
     volatile double yn_1 = 0.0, xn_1 = 0.0;
     size_t count_;
+
+    // THE INPUT OUPTU DATA
+    double u_gc[3] = {0.0, 0.0, 0.0};
+    double y_gc[3] = {0.0, 0.0, 0.0};
 };
 
 int main(int argc, char *argv[])

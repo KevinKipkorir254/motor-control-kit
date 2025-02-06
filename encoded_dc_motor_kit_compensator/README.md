@@ -23,22 +23,22 @@ lead compensator equation:
 <div align="center">
 
 $$
-lead-compensator = \frac{ 136.9*(s + 20.95)}{s + 16.8}
+lead-compensator = \frac{ 185.59*(s + 16.05)}{s + 25.1}
 $$
 
 
 
 | Parameter | value | comment |
 | :-------- | :--------: | :--------: |
-| Rise time | 0.1430 | |
-| Settling time | 0.6708 | |
-| Settling min | 2.1559 | |
-| Settling max | 2.4842 | |
-| overshoot | 5.2680 | |
+| Rise time | 0.1461 | |
+| Settling time | 0.2191 | |
+| Settling min | 1.9557 | |
+| Settling max | 2.1916 | |
+| overshoot | 1.5168 | |
 | undershoot| 0 | |
-| Peak| 2.4842 | |
-| Peak Time| 0.3100 | |
-| Steady state error| 0.8 | |
+| Peak| 2.1916 | |
+| Peak Time| 0.3500 | |
+| Steady state error| 2.6 | |
 
 </div>
 
@@ -50,15 +50,15 @@ $$
 
 | Function | Value | comment|
 | :-------- | :--------: | :--------: |
-| Rise time | 0.0844 | |
-| Settling time | 15.9894 | |
-| Settling min | 1.9377 | |
-| Settling max | 3.2485 | |
-| overshoot | 41.44079 | |
+| Rise time | 0.1994 | |
+| Settling time | 15.714 | |
+| Settling min | 1.3292 | |
+| Settling max | 3.0100 | |
+| overshoot | 73.58 | |
 | undershoot| 0 | |
-| Peak| 3.248591 | |
-| Peak Time| 4.43633 | |
-| Steady state error| 2.28 | |
+| Peak| 3.010 | |
+| Peak Time| 0.4486 | |
+| Steady state error| 1.7340 | |
 
 *N/B: the step test is carried out from 2-3 since the lead compensator does not behave well at reference of one also since the the range 0-90 V of the motor has no effect in increasing the velocity if the motor is at zero. Inquire if this is correct?*
 </div>
@@ -69,28 +69,28 @@ $$
 
 | Function | Expected | Reality| comment|
 | :-------- | :--------: | :--------: |:--------: |
-| Rise time | 0.1430 | 0.0844 | |
-| Settling time | 0.6708 | 15.9894 | since oscillatory it would not settle |
-| Settling min | 2.1559 | 1.9377 | |
-| Settling max | 2.4842 | 3.2485 | |
-| overshoot | 5.2680 | 41.44079 | |
+| Rise time | 0.1461 | 0.1994 | |
+| Settling time | 0.2191 | 15.9894 | since oscillatory it would not settle |
+| Settling min | 1.9557 | 1.3292 | |
+| Settling max | 2.1916 | 3.0100 | |
+| overshoot | 1.5168 | 73.58 | |
 | undershoot| 0 | 0 | |
-| Peak| 2.4842 | 3.248591 | |
-| Peak Time| 0.3100 | 4.43633 | |
-| Steady state| 2.4 | 2.28 | |
+| Peak| 2.1916 | 3.0100 | |
+| Peak Time| 0.3500 | 0.4486 | |
+| Steady state| 2.6 | 1.7340 | |
 
 </div>
 
 ## Lag compensator
 
 ## matlab design parameter expectations
-![LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/lag_compensator.png)
+![LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lag_compensator/matlab_design.png)
 
 Lag compensator equation:
 <div align="center">
 
 $$
-lag-compensator = \frac{ 306.7*(s + 0.006157)}{s + 0.05034}
+lag-compensator = \frac{ 16.416*(s + 0.08774)}{s + 0.01213}
 $$
 
 
@@ -146,12 +146,12 @@ $$
 
 
 ## Lead-lag compensator
-![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/lead_lag.png)
+![LEAD_LAG_COMPENSATOR](/encoded_dc_motor_kit_compensator/documentation/images/lead_lag_compensator/matlab_design.png)
 Lead-lag compensator equation:
 <div align="center">
 
 $$
-lead-lag-compensator = \frac{ 129.3*(s + 20)*(s + 0.001939)}{(s + 16.97)*(s + 0.1013)}
+lead-lag-compensator = \frac{ 59.449*(s + 16.05)*(s + 0.08774)}{(s + 25.1)*(s + 0.00911)}
 $$
 
 

@@ -2,6 +2,9 @@
 Here is the matlab code for the step test:
 
 ```matlab
+clc;
+clear;
+
 % Define system parameters
 num = [0.755];
 den = [1, 13.87, 34.91];
@@ -10,7 +13,7 @@ gs = tf(num, den);
 num_lc = [1, 16.05];
 den_lc = [1, 25.1];
 gs_lc = tf(num_lc, den_lc);
-k = 185.59;
+k = 109.81;
 gs_lc = series(k, gs_lc);
 
 gs_top = series(gs_lc, gs);
