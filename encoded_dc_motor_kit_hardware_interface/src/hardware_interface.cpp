@@ -66,7 +66,7 @@ namespace encoded_dc_motor_kit_hardware_interface
       serial_port_.SetStopBits(LibSerial::StopBits::STOP_BITS_1);
       serial_port_.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
 
-      RCLCPP_INFO_STREAM(rclcpp::get_logger("hardware_interface_node"), "Serial Port initialized successfully.");
+      //RCLCPP_INFO_STREAM(rclcpp::get_logger("hardware_interface_node"), "Serial Port initialized successfully.");
     }
     catch (const std::exception &e)
     {
@@ -104,7 +104,7 @@ namespace encoded_dc_motor_kit_hardware_interface
 
   CallbackReturn EncodedDcMotorKitHardwareInterface::on_activate(const rclcpp_lifecycle::State &previous_state)
   {
-    RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), "Starting robot hardware ...");
+    //RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), "Starting robot hardware ...");
 
     velocity_state.assign(info_.joints.size(), 0.0);
 
@@ -137,7 +137,7 @@ namespace encoded_dc_motor_kit_hardware_interface
 
       // Combine them into a signed 16-bit integer
       signed_data = (int16_t)((high_byte << 8) | low_byte);
-      RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), GREEN_TEXT ": %d" RESET_COLOR, signed_data);
+      //RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), GREEN_TEXT ": %d" RESET_COLOR, signed_data);
     }
 
     double position = (((double)signed_data) / 500)* 2 * M_PI; //convert to radians
@@ -192,7 +192,7 @@ namespace encoded_dc_motor_kit_hardware_interface
     }
     else
     {
-      RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), BLUE_TEXT ": %d" RESET_COLOR, data_output_sting);
+      //RCLCPP_INFO(rclcpp::get_logger("EncodedDcMotorKitHardwareInterface"), BLUE_TEXT ": %d" RESET_COLOR, data_output_sting);
     }
 
     return hardware_interface::return_type::OK;

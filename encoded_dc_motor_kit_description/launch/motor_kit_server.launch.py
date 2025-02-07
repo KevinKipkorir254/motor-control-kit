@@ -2,7 +2,7 @@ import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import Command, LaunchConfiguration
 
@@ -17,6 +17,18 @@ def generate_launch_description():
         name = "model",
         default_value = urdf_file,
         description = "Absolute path to robot urdf"
+    )
+
+    use_gui_arg = DeclareLaunchArgument(
+        name='use_gui',
+        default_value='true',
+        description='Flag to enable velocity command GUI'
+    )
+
+    use_plotjuggler_arg = DeclareLaunchArgument(
+        name='use_plotjuggler',
+        default_value='true',
+        description='Flag to enable PlotJuggler GUI'
     )
 
     robot_description = ParameterValue(Command(
@@ -55,7 +67,7 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster"],
         output="screen"
     )
-
+    
 
     return LaunchDescription([
         model_arg,
@@ -63,4 +75,20 @@ def generate_launch_description():
         controller_manager,
         joint_state_broadcaster_spawner,
         effort_controller_spawner,
+        OpaqueFunction(function=launch_gui_nodes),
+        
     ])
+
+
+def launch_gui_nodes(context):
+    nodes = []
+    if context.launch_configurations.get("use_gui", "false").lower() == "true":
+        nodes.append(
+            Node(
+                package="encoded_dc_motor_kit_gui",
+                executable="velocity_publisher_gui.py",
+            )
+        )
+    if context.launch_configurations.get("use_plotjuggler", "false").lower() == "true":
+        nodes.append(Node(package="plotjuggler", executable="plotjuggler"))
+    return nodes

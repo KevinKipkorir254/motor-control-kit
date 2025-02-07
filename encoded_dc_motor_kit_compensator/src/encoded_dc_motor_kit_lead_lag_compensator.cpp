@@ -2,6 +2,9 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <string>
+#include <iostream>
+#include <cstdlib> // for system()
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
@@ -13,16 +16,22 @@ using std::placeholders::_1;
 /* This example creates a subclass of Node and uses std::bind() to register a
  * member function as a callback from the timer. */
 
-class LeadCompensator : public rclcpp::Node
+class LeadLagCompensator : public rclcpp::Node
 {
 public:
-    LeadCompensator()
-        : Node("LeadCompensator"), count_(0)
+    LeadLagCompensator()
+        : Node("LeadLagCompensator"), count_(0)
     {
+        // Text to display using figlet
+        std::string text = "MOTOR-KIT";
+        // Construct the figlet command with the -c option for centering
+        std::string command = "figlet -w $(tput cols) -c " + text;
+        // Execute the command
+        std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
         filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
-        subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadCompensator::update_reference_velocity, this, std::placeholders::_1));
-        joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
+        subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadLagCompensator::update_reference_velocity, this, std::placeholders::_1));
+        joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadLagCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
         lead_lag_compensator_states = this->create_publisher<std_msgs::msg::Float64MultiArray>("/lead_lag_compensator_states", 10);
 
         // Configure layout only once in the constructor
@@ -33,6 +42,12 @@ public:
 
         labels_ = {"y_gc_0", "G_c_output_1 * y_gc_1", "G_c_output_2 * y_gc_2",
                    "G_c_input_0 * u_gc_0", "G_c_input_1 * u_gc_1", "G_c_input_2 * u_gc_2"};
+
+        for (int i = 0; i < 3; ++i)
+        {
+            u_gc[i] = 0.0;
+            y_gc[i] = 0.0;
+        }
     }
 
 private:
@@ -53,7 +68,14 @@ private:
             int shaft_index = std::distance(msg.name.begin(), shaft_it);
             shaft_position_ = msg.position[shaft_index];
             shaft_velocity_ = msg.velocity[shaft_index];
-            RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+            // RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+
+            // Instead of using RCLCPP_INFO (which prints a new line each time),
+            // use std::cout with carriage return to update on the same line.
+            static int spinner_index = 0;
+            const std::string spinner = "|/-\\";
+            std::cout << "\rROS Node is running... " << spinner[spinner_index] << std::flush;
+            spinner_index = (spinner_index + 1) % spinner.size();
         }
         else
         {
@@ -89,10 +111,10 @@ private:
     {
         // OBTAINING THE DATA FEEDBACK
         // filtering the data
-        double input_coeffs[4] = { 0.009901, 0.009901, 0.0, 0.0};
-        double output_coeffs[4] = { 1.000000, 0.9802, 0.0, 0.0};
+        double input_coeffs[4] = {0.009901, 0.009901, 0.0, 0.0};
+        double output_coeffs[4] = {1.000000, 0.9802, 0.0, 0.0};
         yn_1[0] = output_coeffs[1] * yn_1[1] + input_coeffs[0] * shaft_velocity + input_coeffs[1] * xn_1[1];
-        
+
         xn_1[3] = xn_1[2];
         xn_1[2] = xn_1[1];
         xn_1[1] = shaft_velocity;
@@ -106,26 +128,29 @@ private:
     double update_control_value(double shaft_velocity)
     {
         // G_C COMPENSATOR INITIALISATION
-        double G_c_output[3] = {1.00, 1.777, -0.7769};
-        double G_c_input[3] = {57.08, -105.6, 48.56};
+        double G_c_output[3] = {1.00, 1.777, -0.7766};
+        double G_c_input[3] = {81.14 * 5, -150.1 * 5, 69.02 * 5};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
-        u_gc[0] = error;
-        y_gc[0] = G_c_output[1] * y_gc[1] + G_c_output[2] * y_gc[2] + G_c_input[0] * u_gc[0] + G_c_input[1] * u_gc[1] + G_c_input[2] * u_gc[2];
+        y_gc[0] = G_c_output[1] * y_gc[1] + G_c_output[2] * y_gc[2] + G_c_input[0] * error + G_c_input[1] * u_gc[1] + G_c_input[2] * u_gc[2];
 
+        // update previous outputs
         y_gc[2] = y_gc[1];
         y_gc[1] = y_gc[0];
+
+        // update previous inputs
         u_gc[2] = u_gc[1];
-        u_gc[1] = u_gc[0];
+        u_gc[1] = error;
 
         // publish y_gc, G_c_output[1] * y_gc[1], G_c_output[2] * y_gc[2], G_c_input[0] * u_gc[0], G_c_input[1] * u_gc[1], G_c_input[2] * u_gc[2]
         auto lead_lag_compensator_states_message = std_msgs::msg::Float64MultiArray();
+        lead_lag_compensator_states_message.data.push_back(error);
         lead_lag_compensator_states_message.data.push_back(y_gc[0]);
-        lead_lag_compensator_states_message.data.push_back( G_c_output[1] * y_gc[1]);
-        lead_lag_compensator_states_message.data.push_back( G_c_output[2] * y_gc[2]);
-        lead_lag_compensator_states_message.data.push_back( G_c_input[0] * u_gc[0]);
-        lead_lag_compensator_states_message.data.push_back( G_c_input[1] * u_gc[1]);
-        lead_lag_compensator_states_message.data.push_back( G_c_input[2] * u_gc[2]);
+        lead_lag_compensator_states_message.data.push_back(G_c_output[1] * y_gc[1]);
+        lead_lag_compensator_states_message.data.push_back(G_c_output[2] * y_gc[2]);
+        lead_lag_compensator_states_message.data.push_back(G_c_input[0] * error);
+        lead_lag_compensator_states_message.data.push_back(G_c_input[1] * u_gc[1]);
+        lead_lag_compensator_states_message.data.push_back(G_c_input[2] * u_gc[2]);
         lead_lag_compensator_states->publish(lead_lag_compensator_states_message);
 
         return y_gc[0];
@@ -134,7 +159,7 @@ private:
     void update_reference_velocity(const std_msgs::msg::Float64MultiArray &msg)
     {
         reference_velocity = msg.data[0];
-        RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
+        // RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
@@ -142,12 +167,11 @@ private:
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr lead_lag_compensator_states;
-    volatile double reference_velocity;
+    volatile double reference_velocity = 0.0;
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
-    volatile double yn_1[4] = { 0.0, 0.0, 0.0, 0.0};
-    volatile double xn_1[4] = { 0.0, 0.0, 0.0, 0.0};
-
+    volatile double yn_1[4] = {0.0, 0.0, 0.0, 0.0};
+    volatile double xn_1[4] = {0.0, 0.0, 0.0, 0.0};
 
     size_t count_;
     std_msgs::msg::MultiArrayLayout layout_;
@@ -161,7 +185,7 @@ private:
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<LeadCompensator>());
+    rclcpp::spin(std::make_shared<LeadLagCompensator>());
     rclcpp::shutdown();
     return 0;
 }

@@ -2,6 +2,8 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <iostream>
+#include <cstdlib> // for system()
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
@@ -13,16 +15,22 @@ using std::placeholders::_1;
 /* This example creates a subclass of Node and uses std::bind() to register a
  * member function as a callback from the timer. */
 
-class LeadCompensator : public rclcpp::Node
+class LagCompensator : public rclcpp::Node
 {
 public:
-    LeadCompensator()
-        : Node("LeadCompensator"), count_(0)
+    LagCompensator()
+        : Node("LagCompensator"), count_(0)
     {
+        // Text to display using figlet
+        std::string text = "MOTOR-KIT";
+        // Construct the figlet command with the -c option for centering
+        std::string command = "figlet -w $(tput cols) -c " + text;
+        // Execute the command
+        std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
         filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
-        subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadCompensator::update_reference_velocity, this, std::placeholders::_1));
-        joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
+        subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LagCompensator::update_reference_velocity, this, std::placeholders::_1));
+        joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LagCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
     }
 
 private:
@@ -43,7 +51,14 @@ private:
             int shaft_index = std::distance(msg.name.begin(), shaft_it);
             shaft_position_ = msg.position[shaft_index];
             shaft_velocity_ = msg.velocity[shaft_index];
-            RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+            // RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+
+            // Instead of using RCLCPP_INFO (which prints a new line each time),
+            // use std::cout with carriage return to update on the same line.
+            static int spinner_index = 0;
+            const std::string spinner = "|/-\\";
+            std::cout << "\rROS Node is running... " << spinner[spinner_index] << std::flush;
+            spinner_index = (spinner_index + 1) % spinner.size();
         }
         else
         {
@@ -79,10 +94,10 @@ private:
     {
         // OBTAINING THE DATA FEEDBACK
         // filtering the data
-        double input_coeffs[4] = { 0.009901, 0.009901, 0.0, 0.0};
-        double output_coeffs[4] = { 1.000000, 0.9802, 0.0, 0.0};
+        double input_coeffs[4] = {0.009901, 0.009901, 0.0, 0.0};
+        double output_coeffs[4] = {1.000000, 0.9802, 0.0, 0.0};
         yn_1[0] = output_coeffs[1] * yn_1[1] + input_coeffs[0] * shaft_velocity + input_coeffs[1] * xn_1[1];
-        
+
         xn_1[3] = xn_1[2];
         xn_1[2] = xn_1[1];
         xn_1[1] = shaft_velocity;
@@ -114,7 +129,7 @@ private:
     void update_reference_velocity(const std_msgs::msg::Float64MultiArray &msg)
     {
         reference_velocity = msg.data[0];
-        RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
+        // RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
@@ -124,8 +139,8 @@ private:
     volatile double reference_velocity;
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
-    volatile double yn_1[4] = { 0.0, 0.0, 0.0, 0.0};
-    volatile double xn_1[4] = { 0.0, 0.0, 0.0, 0.0};
+    volatile double yn_1[4] = {0.0, 0.0, 0.0, 0.0};
+    volatile double xn_1[4] = {0.0, 0.0, 0.0, 0.0};
 
     size_t count_;
 
@@ -137,7 +152,7 @@ private:
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<LeadCompensator>());
+    rclcpp::spin(std::make_shared<LagCompensator>());
     rclcpp::shutdown();
     return 0;
 }
