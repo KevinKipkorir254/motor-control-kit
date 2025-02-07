@@ -79,10 +79,18 @@ private:
     {
         // OBTAINING THE DATA FEEDBACK
         // filtering the data
-        double yn = 0.969 * yn_1 + 0.0155 * shaft_velocity + 0.0155 * xn_1;
-        xn_1 = shaft_velocity;
-        yn_1 = yn;
-        return yn;
+        double input_coeffs[4] = { 0.009901, 0.009901, 0.0, 0.0};
+        double output_coeffs[4] = { 1.000000, 0.9802, 0.0, 0.0};
+        yn_1[0] = output_coeffs[1] * yn_1[1] + input_coeffs[0] * shaft_velocity + input_coeffs[1] * xn_1[1];
+        
+        xn_1[3] = xn_1[2];
+        xn_1[2] = xn_1[1];
+        xn_1[1] = shaft_velocity;
+
+        yn_1[3] = yn_1[2];
+        yn_1[2] = yn_1[1];
+        yn_1[1] = yn_1[0];
+        return yn_1[0];
     }
 
     double update_control_value(double shaft_velocity)
@@ -114,7 +122,8 @@ private:
     volatile double reference_velocity;
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
-    volatile double yn_1 = 0.0, xn_1 = 0.0;
+    volatile double yn_1[4] = { 0.0, 0.0, 0.0, 0.0};
+    volatile double xn_1[4] = { 0.0, 0.0, 0.0, 0.0};    
     size_t count_;
 
     // THE INPUT OUPTU DATA

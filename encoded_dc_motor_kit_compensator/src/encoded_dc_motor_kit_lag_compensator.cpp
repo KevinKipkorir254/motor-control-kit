@@ -78,44 +78,19 @@ private:
     double filter_voltage_velocity_value(double shaft_velocity)
     {
         // OBTAINING THE DATA FEEDBACK
-
-        // update input
-        filter_input[7] = filter_input[6];
-        filter_input[6] = filter_input[5];
-        filter_input[5] = filter_input[4];
-        filter_input[4] = filter_input[3];
-        filter_input[3] = filter_input[2];
-        filter_input[2] = filter_input[1];
-        filter_input[1] = shaft_velocity;
-
         // filtering the data
-        filter_output[0] = 
-        a_i[1] * filter_output[1] +
-        a_i[2] * filter_output[2] + 
-        a_i[3] * filter_output[3] +
-        a_i[4] * filter_output[4] + 
-        a_i[5] * filter_output[5] +
-        a_i[6] * filter_output[6] +
-        a_i[7] * filter_output[7] +
-        b_i[0] * shaft_velocity + 
-        b_i[1] * filter_input[1] + 
-        b_i[2] * filter_input[2] +
-        b_i[3] * filter_input[3] +
-        b_i[4] * filter_input[4] +
-        b_i[5] * filter_input[5] +
-        b_i[6] * filter_input[6] +
-        b_i[7] * filter_input[7];
+        double input_coeffs[4] = { 0.009901, 0.009901, 0.0, 0.0};
+        double output_coeffs[4] = { 1.000000, 0.9802, 0.0, 0.0};
+        yn_1[0] = output_coeffs[1] * yn_1[1] + input_coeffs[0] * shaft_velocity + input_coeffs[1] * xn_1[1];
+        
+        xn_1[3] = xn_1[2];
+        xn_1[2] = xn_1[1];
+        xn_1[1] = shaft_velocity;
 
-        // update outputs
-        filter_output[7] = filter_output[6];
-        filter_output[6] = filter_output[5];
-        filter_output[5] = filter_output[4];
-        filter_output[4] = filter_output[3];
-        filter_output[3] = filter_output[2];
-        filter_output[2] = filter_output[1];
-        filter_output[1] = filter_output[0];
-
-        return filter_output[0];
+        yn_1[3] = yn_1[2];
+        yn_1[2] = yn_1[1];
+        yn_1[1] = yn_1[0];
+        return yn_1[0];
     }
 
     double update_control_value(double shaft_velocity)
@@ -149,15 +124,10 @@ private:
     volatile double reference_velocity;
     volatile double shaft_position_ = 0.0;
     volatile double shaft_velocity_ = 0.0;
-    volatile double yn_1 = 0.0, xn_1 = 0.0;
-    size_t count_;
+    volatile double yn_1[4] = { 0.0, 0.0, 0.0, 0.0};
+    volatile double xn_1[4] = { 0.0, 0.0, 0.0, 0.0};
 
-    // filter input and output parameters
-    double a_i[7] = {3.65428118, -5.86934257, 5.21922855, -2.68936399, 0.75741618, -0.0907553};
-    double b_i[8] = {0.00028962, 0.00173775, 0.00434436, 0.00579249, 0.00434436, 0.00173775,
-                     0.00028962};
-    double filter_input[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-    double filter_output[8] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    size_t count_;
 
     // THE INPUT OUPTU DATA
     double u_gc[3] = {0.0, 0.0, 0.0};
