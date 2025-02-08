@@ -114,7 +114,7 @@ private:
     {
         // G_C COMPENSATOR INITIALISATION
         double G_c_output[2] = {0.00, 0.777};
-        double G_c_input[2] = {105.4 * 5, -89.74 * 5};
+        double G_c_input[2] = {105.4 * 3, -89.74 * 3};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
 
