@@ -2,6 +2,8 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <iostream>
+#include <cstdlib> // for system()
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
@@ -19,6 +21,12 @@ public:
     LeadCompensator()
         : Node("LeadCompensator"), count_(0)
     {
+        // Text to display using figlet
+        std::string text = "MOTOR-KIT";
+        // Construct the figlet command with the -c option for centering
+        std::string command = "figlet -w $(tput cols) -c " + text;
+        // Execute the command
+        std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
         filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
         subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadCompensator::update_reference_velocity, this, std::placeholders::_1));
@@ -111,7 +119,7 @@ private:
     void update_reference_velocity(const std_msgs::msg::Float64MultiArray &msg)
     {
         reference_velocity = msg.data[0];
-        RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
+        // RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;

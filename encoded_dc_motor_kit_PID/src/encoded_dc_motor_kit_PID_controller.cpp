@@ -140,7 +140,7 @@ private:
     void update_reference_velocity(const std_msgs::msg::Float64MultiArray &msg)
     {
         reference_velocity = msg.data[0];
-        RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
+        //RCLCPP_INFO(this->get_logger(), "Ref: '%f'", reference_velocity);
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
