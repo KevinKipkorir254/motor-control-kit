@@ -38,7 +38,7 @@ private:
     {
         auto message = std::make_shared<std_msgs::msg::Float64MultiArray>();
         message->data.push_back(0.0);
-        RCLCPP_INFO(this->get_logger(), "Publishing: '%.4f'", 0.0);
+        //RCLCPP_INFO(this->get_logger(), "Publishing: '%.4f'", 0.0);
         publisher_->publish(*message);
     }
 
@@ -51,7 +51,7 @@ private:
             int shaft_index = std::distance(msg.name.begin(), shaft_it);
             shaft_position_ = msg.position[shaft_index];
             shaft_velocity_ = msg.velocity[shaft_index];
-            RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+            //RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
         }
         else
         {

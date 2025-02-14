@@ -38,7 +38,7 @@ private:
     {
         auto message = std::make_shared<std_msgs::msg::Float64MultiArray>();
         message->data.push_back(0.0);
-        RCLCPP_INFO(this->get_logger(), "Publishing: '%.4f'", 0.0);
+        // RCLCPP_INFO(this->get_logger(), "Publishing: '%.4f'", 0.0);
         publisher_->publish(*message);
     }
 
@@ -65,7 +65,7 @@ private:
         // get control value
         double control_output = update_control_value(shaft_velocity_);
         control_output = clamp_controller_value(control_output);
-        RCLCPP_INFO(this->get_logger(), "Control: '%.4f'", control_output);
+        // RCLCPP_INFO(this->get_logger(), "Control: '%.4f'", control_output);
 
         // publish control value
         publish_control_value(control_output);
