@@ -22,9 +22,9 @@ public:
         : Node("LeadCompensator"), count_(0)
     {    
         // Text to display using figlet
-       std::string text = "MOTOR-KIT";
-       // Construct the figlet command
-       std::string command = "figlet " + text;
+        std::string text = "MOTOR-KIT";
+        // Construct the figlet command with the -c option for centering
+        std::string command = "figlet -w $(tput cols) -c " + text;
         // Execute the command
         std::system(command.c_str());
 
@@ -53,6 +53,13 @@ private:
             shaft_position_ = msg.position[shaft_index];
             shaft_velocity_ = msg.velocity[shaft_index];
             // RCLCPP_INFO(this->get_logger(), "Pos: '%f', Vel: '%f'", shaft_position_, shaft_velocity_);
+
+            // Instead of using RCLCPP_INFO (which prints a new line each time),
+            // use std::cout with carriage return to update on the same line.
+            static int spinner_index = 0;
+            const std::string spinner = "|/-\\";
+            std::cout << "\rROS Node is running... " << spinner[spinner_index] << std::flush;
+            spinner_index = (spinner_index + 1) % spinner.size();
         }
         else
         {
