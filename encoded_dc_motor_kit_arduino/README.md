@@ -14,4 +14,6 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 | Motor Control - IN1 | GPIO 5 | N/A |
 | Motor Control - IN2 | GPIO 4 | N/A |
 | Motor Control - Enable | GPIO 15 | N/A |
+
+![ESP32 WROOM IMAGE](/encoded_dc_motor_kit_arduino/documentation/images/ESP32%20WROOM.png)
 </div>
