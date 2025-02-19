@@ -36,7 +36,7 @@ The architecture of the Motor Kit is modular and organized for easy customizatio
 
 ## Design Documentation
 
-Detailed design documentation is available at [DOCUMENTATION](https://github.com/KevinKipkorir254/study_notes_control_kit.git)
+Detailed design documentation is available at documentation folder in each package matlab code .md
 
 ## Usage
 ### Prerequisites
