@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
+from sensor_msgs.msg import JointState  # Correct
 from control.timeresp import step_info
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ class StepResponseAnalyzer(Node):
         super().__init__('step_response_analyzer')
 
         # Subscribers
-        self.output_sub = self.create_subscription(Float64MultiArray, '/filtered_velocity', self.output_callback, 10)
+        self.output_sub = self.create_subscription( JointState, '/filtered_velocity', self.output_callback, 10)
 
         # Publishers
         self.reference_pub = self.create_publisher(Float64MultiArray, '/velocity/commands', 10)
@@ -20,10 +21,11 @@ class StepResponseAnalyzer(Node):
         self.reference_data = []  # Input data (reference velocity)
         self.output_data = []     # Output data (filtered velocity)
         self.time_data = []       # Time data
+        self.time_data_finisher = []
 
         # Timing
         self.start_time = self.get_clock().now().nanoseconds * 1e-9
-        self.sample_rate = 0.01   # Sampling interval (10ms)
+        self.sample_rate = 1/100  # Sampling interval (10ms)
         self.step_set = False     # Flag to ensure the step input is sent once
         self.initial_command_sent = False  # Flag to ensure initial command is sent once
         self.recording_started = False  # Flag to start recording data
@@ -32,6 +34,23 @@ class StepResponseAnalyzer(Node):
         self.create_timer(self.sample_rate, self.generate_initial_command)
         self.create_timer(self.sample_rate, self.generate_step_input)
         self.create_timer(self.sample_rate, self.calculate_and_print_metrics)
+    
+    def publish_with_subscriber_check(self, msg):
+        """Wait for a subscriber and then attempt to publish the message multiple times."""
+        max_attempts = 10
+        attempt = 0
+
+        while attempt < max_attempts:
+            if self.reference_pub.get_subscription_count() > 0:  # Check if there is at least one subscriber
+                self.reference_pub.publish(msg)
+                self.get_logger().info(f"Publishing attempt {attempt + 1}/{max_attempts}...")
+                return True  # Assume success if a subscriber exists when publishing
+            else:
+                self.get_logger().warn("No subscribers found. Retrying...")
+                time.sleep(1)  # Wait a bit before retrying
+                attempt += 1
+            
+        return False  # If max attempts are reached and no subscribers, return failure
 
     def generate_initial_command(self):
         """Generate an initial velocity command of 2."""
@@ -43,14 +62,20 @@ class StepResponseAnalyzer(Node):
 
             # Publish the initial command
             self.get_logger().info(f"Publishing initial command: {initial_value}")
-            self.reference_pub.publish(initial_msg)
 
-            # Set the flag to True so the initial command is sent only once
-            self.initial_command_sent = True
+            # Ensure the message is published successfully
+            success = self.publish_with_subscriber_check(initial_msg)
 
-            # Start a timer to wait for 4 seconds before sending the step input
-            time.sleep(4)
-            self.create_timer(1.0, self.enable_step_input)
+            if success:
+                self.get_logger().info(f"Initial command published successfully: {initial_value}")
+                self.initial_command_sent = True
+
+                # Start a timer to send the step input after 4 seconds
+                time.sleep(4)
+                self.create_timer(1.0, self.enable_step_input)
+            else:
+                self.get_logger().warn("Failed to publish initial command after multiple attempts.")
+
 
     def enable_step_input(self):
         """Enable the step input after 4 seconds."""
@@ -76,24 +101,39 @@ class StepResponseAnalyzer(Node):
             self.recording_started = True
 
             # Start a timer to wait for 10 seconds before calculating metrics
-            self.create_timer(20.0, self.enable_metrics_calculation)
+            self.create_timer(10.0, self.enable_metrics_calculation)
 
     def output_callback(self, msg):
         """Callback to capture system output (filtered velocity)."""
+        #self.get_logger().info("Callback triggered!")  
         if self.recording_started:
-            current_time = self.get_clock().now().nanoseconds * 1e-9 - self.start_time
+            #self.get_logger().info("Callback triggered 22!")  
+            current_time = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9  # Use ROS 2 timestamp
+            #current_time_finisher = self.get_clock().now().nanoseconds * 1e-9 - self.start_time
+            #self.time_data_finisher.append(current_time_finisher)
             self.time_data.append(current_time)
-            self.output_data.append(msg.data[0])  # Ensure we only store the first element of the array
+            self.output_data.append(msg.velocity[0])  # Ensure we only store the first element of the array
+            #if hasattr(msg, "velocity"):  # Ensure msg has the velocity attribute
+            #    self.get_logger().info(f"Raw velocity message: {msg.velocity}")
+            #    if isinstance(msg.velocity, list) or isinstance(msg.velocity, tuple):
+            #        self.output_data.append(msg.velocity[0])  # Store first element
+            #        self.get_logger().info(f"Velocity stored: {msg.velocity[0]}")
+            #    else:
+            #        self.output_data.append(msg.velocity)  # Direct storage
+            #        self.get_logger().info(f"Velocity stored: {msg.velocity}")
+            #else:
+            #    self.get_logger().error("Error: msg.velocity does not exist!")
+            
 
     def enable_metrics_calculation(self):
         """Enable metrics calculation after 10 seconds."""
-        self.get_logger().info("Enabling metrics calculation...")
+        #self.get_logger().info("Enabling metrics calculation...")
         self.calculate_and_print_metrics()
 
     def calculate_and_print_metrics(self):
         """Calculate and print step response metrics."""
         if len(self.time_data) < 1000 or len(self.output_data) < 1000:
-            self.get_logger().info("Waiting for sufficient data...")
+            #self.get_logger().info("Waiting for sufficient data...")
             return
 
         try:
@@ -165,6 +205,8 @@ class StepResponseAnalyzer(Node):
         plt.savefig('step_response_plot.png')  # Save the plot as an image
         plt.show()
         self.get_logger().info("Step response plot saved and displayed.")
+        
+    
 
 def main(args=None):
     rclpy.init(args=args)

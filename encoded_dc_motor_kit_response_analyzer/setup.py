@@ -21,6 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
              'step_response_analyzer = encoded_dc_motor_kit_response_analyzer.step_response_analyzer:main',
+             'step_response_analyzer_no_gui = encoded_dc_motor_kit_response_analyzer.step_response_analyzer_no_gui:main',
+             'system_identification = encoded_dc_motor_kit_response_analyzer.system_identification:main',
         ],
     },
 )
