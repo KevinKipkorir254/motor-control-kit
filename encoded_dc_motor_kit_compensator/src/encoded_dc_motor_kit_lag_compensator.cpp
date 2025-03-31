@@ -28,7 +28,7 @@ public:
         // Execute the command
         std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
-        filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
+        filtered_velocity_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("/filtered_velocity", 10);
         subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LagCompensator::update_reference_velocity, this, std::placeholders::_1));
         joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LagCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
     }
@@ -85,8 +85,9 @@ private:
 
     void publish_filtered_velocity_value(double filtered_velocity)
     {
-        auto filtered_velocity_message = std_msgs::msg::Float64MultiArray();
-        filtered_velocity_message.data.push_back(filtered_velocity);
+        auto filtered_velocity_message = sensor_msgs::msg::JointState();
+        filtered_velocity_message.header.stamp = this->now();  // Assign ROS timestamp
+        filtered_velocity_message.velocity.push_back(filtered_velocity);
         filtered_velocity_publisher_->publish(filtered_velocity_message);
     }
 
@@ -94,8 +95,8 @@ private:
     {
         // OBTAINING THE DATA FEEDBACK
         // filtering the data
-        double input_coeffs[4] = {0.009901, 0.009901, 0.0, 0.0};
-        double output_coeffs[4] = {1.000000, 0.9802, 0.0, 0.0};
+        double input_coeffs[4] = {0.0155, 0.0155, 0.0, 0.0};
+        double output_coeffs[4] = {1.000000, 0.969 , 0.0, 0.0};
         yn_1[0] = output_coeffs[1] * yn_1[1] + input_coeffs[0] * shaft_velocity + input_coeffs[1] * xn_1[1];
 
         xn_1[3] = xn_1[2];
@@ -111,8 +112,8 @@ private:
     double update_control_value(double shaft_velocity)
     {
         // G_C COMPENSATOR INITIALISATION
-        double G_c_output[2] = {0.00, 0.9999089};
-        double G_c_input[2] = {170.904, -170.754};
+        double G_c_output[2] = {0.00, 0.9991};
+        double G_c_input[2] = { gain1_ * 1, gain1_ * -0.9991};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
         y_gc[0] = G_c_output[1] * y_gc[1] + G_c_input[0] * error + G_c_input[1] * u_gc[1];
@@ -133,7 +134,7 @@ private:
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_publisher_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr filtered_velocity_publisher_;
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
     volatile double reference_velocity;
@@ -141,6 +142,7 @@ private:
     volatile double shaft_velocity_ = 0.0;
     volatile double yn_1[4] = {0.0, 0.0, 0.0, 0.0};
     volatile double xn_1[4] = {0.0, 0.0, 0.0, 0.0};
+    const double gain1_ = 200;
 
     size_t count_;
 
