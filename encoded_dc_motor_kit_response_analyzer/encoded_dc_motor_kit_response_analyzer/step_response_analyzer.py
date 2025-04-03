@@ -1,4 +1,5 @@
 import rclpy
+import sys
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
 from sensor_msgs.msg import JointState  # Correct
@@ -173,10 +174,14 @@ class StepResponseAnalyzer(Node):
 
             # Plot the data
             self.plot_data(time_array, response_array)
+            time.sleep(4)
 
             # Kill the subscribers
             self.destroy_subscription(self.output_sub)
             self.get_logger().info("Subscribers killed.")
+            
+            #exit
+            exit()
 
             # Stop calculating once metrics are printed
             rclpy.shutdown()
@@ -218,6 +223,8 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+        #exit(0)  # Ensures the program fully exits
 
 if __name__ == '__main__':
+    import os
     main()
