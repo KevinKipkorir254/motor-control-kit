@@ -29,7 +29,7 @@ public:
         // Execute the command
         std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
-        filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
+        filtered_velocity_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("/filtered_velocity", 10);
         subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadLagCompensator::update_reference_velocity, this, std::placeholders::_1));
         joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadLagCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
         lead_lag_compensator_states = this->create_publisher<std_msgs::msg::Float64MultiArray>("/lead_lag_compensator_states", 10);
@@ -102,8 +102,9 @@ private:
 
     void publish_filtered_velocity_value(double filtered_velocity)
     {
-        auto filtered_velocity_message = std_msgs::msg::Float64MultiArray();
-        filtered_velocity_message.data.push_back(filtered_velocity);
+        auto filtered_velocity_message = sensor_msgs::msg::JointState();
+        filtered_velocity_message.header.stamp = this->now();  // Assign ROS timestamp
+        filtered_velocity_message.velocity.push_back(filtered_velocity);
         filtered_velocity_publisher_->publish(filtered_velocity_message);
     }
 
@@ -128,8 +129,9 @@ private:
     double update_control_value(double shaft_velocity)
     {
         // G_C COMPENSATOR INITIALISATION
-        double G_c_output[3] = {1.00, 1.777, -0.7766};
-        double G_c_input[3] = {81.14 * 5, -150.1 * 5, 69.02 * 5};
+        //G_c_output[3]    G_c_input[3]
+        double G_c_input[3] = {gains_ * 1.000000000000001,gains_ * -1.676778026159205,gains_ * 0.677060853511581};
+        double G_c_output[3] = {1.000000000000000, 1.636899746327462, -0.636932814955440};
 
         double error = reference_velocity - shaft_velocity; // error = r - y
         y_gc[0] = G_c_output[1] * y_gc[1] + G_c_output[2] * y_gc[2] + G_c_input[0] * error + G_c_input[1] * u_gc[1] + G_c_input[2] * u_gc[2];
@@ -163,7 +165,7 @@ private:
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_publisher_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr filtered_velocity_publisher_;
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr lead_lag_compensator_states;
@@ -176,6 +178,8 @@ private:
     size_t count_;
     std_msgs::msg::MultiArrayLayout layout_;
     std::vector<std::string> labels_; // For debugging/logging purposes
+
+    const double gains_ = 150;
 
     // THE INPUT OUPTU DATA
     double u_gc[3] = {0.0, 0.0, 0.0};
