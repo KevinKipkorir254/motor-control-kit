@@ -14,16 +14,14 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(ros2_motor_controller_msgs REQUIRED)
 
-
-pkg_check_modules(SERIAL libserial)
-
+# Add REQUIRED flag to ensure LibSerial is found
+pkg_check_modules(SERIAL REQUIRED libserial)
 
 # Add the plugin XML to the install
 install(FILES
     encoded_dc_motor_kit_hardware_interface.xml
     DESTINATION share/${PROJECT_NAME}/
 )
-
 
 add_library(
   ${PROJECT_NAME} SHARED
@@ -34,12 +32,13 @@ add_library(
 target_include_directories(
   ${PROJECT_NAME} PRIVATE
   include
-  "${SERIAL_INCLUDE_DIRS}"
+  ${SERIAL_INCLUDE_DIRS}  # Changed from quoted to regular variable
 )
 
+# Use SERIAL_LIBRARIES instead of SERIAL_LDFLAGS
 target_link_libraries(
   ${PROJECT_NAME}
-  "${SERIAL_LDFLAGS}"
+  ${SERIAL_LIBRARIES}  # Changed from SERIAL_LDFLAGS to SERIAL_LIBRARIES
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -64,18 +63,9 @@ install(
   DESTINATION include
 )
 
-#install(
-#  DIRECTORY launch config
-#  DESTINATION share/${PROJECT_NAME}
-#)
-
-# install(PROGRAMS
-#   ${PROJECT_NAME}/slider_control.py
-#   DESTINATION lib/${PROJECT_NAME}
-# )
-
+# Fixed syntax for include directories export (removed parentheses)
 ament_export_include_directories(
-  include()
+  include
 )
 
 ament_export_libraries(
@@ -86,11 +76,9 @@ ament_export_dependencies(
   rclcpp_lifecycle
   rclcpp
   pluginlib
-  hardware_interface  
+  hardware_interface
   ros2_motor_controller_msgs
 )
-
-
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
