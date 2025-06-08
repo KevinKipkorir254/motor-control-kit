@@ -142,7 +142,7 @@ private:
     volatile double shaft_velocity_ = 0.0;
     volatile double yn_1[4] = {0.0, 0.0, 0.0, 0.0};
     volatile double xn_1[4] = {0.0, 0.0, 0.0, 0.0};
-    const double gain1_ = 200;
+    const double gain1_ = 100;
     size_t count_;
 
     // THE INPUT OUPTU DATA

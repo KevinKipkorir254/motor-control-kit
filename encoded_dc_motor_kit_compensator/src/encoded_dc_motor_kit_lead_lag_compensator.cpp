@@ -179,7 +179,7 @@ private:
     std_msgs::msg::MultiArrayLayout layout_;
     std::vector<std::string> labels_; // For debugging/logging purposes
 
-    const double gains_ = 150;
+    const double gains_ = 100;
 
     // THE INPUT OUPTU DATA
     double u_gc[3] = {0.0, 0.0, 0.0};
