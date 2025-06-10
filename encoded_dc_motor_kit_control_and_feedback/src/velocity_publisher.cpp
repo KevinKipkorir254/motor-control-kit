@@ -126,12 +126,17 @@ private:
                 {
                     // Just ESC key pressed
                     RCLCPP_INFO(this->get_logger(), "ESC pressed - shutting down...");
+                    current_velocity_ = 0.0;
+                    publishVelocity();
                     rclcpp::shutdown();
                 }
             }
             else if (ch == 'q' || ch == 'Q')
             {
-                RCLCPP_INFO(this->get_logger(), "'q' pressed - shutting down...");
+                    // Just Q key pressed
+                RCLCPP_INFO(this->get_logger(), "'q' pressed - shutting down..."); //sweet
+                current_velocity_ = 0.0;
+                publishVelocity();
                 rclcpp::shutdown();
             }
         }
