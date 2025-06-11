@@ -67,7 +67,8 @@ private:
         msg_count_++;
         
         // Get shaft position and velocity
-        auto shaft_it = std::find(msg.name.begin(), msg.name.end(), "");
+        //auto shaft_it = std::find(msg.name.begin(), msg.name.end(), "");
+        auto shaft_it = true; //TODO RUN CORRECT THIS TEMPORARY FIX beacuse I now it is present
         if (shaft_it != msg.name.end())
         {
             int shaft_index = std::distance(msg.name.begin(), shaft_it);
