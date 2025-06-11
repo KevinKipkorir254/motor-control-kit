@@ -15,6 +15,7 @@
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
+// I am writing some random stuff so I can get a new space for git
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
@@ -72,8 +73,8 @@ private:
         if (shaft_it == true)
         {
             //int shaft_index = std::distance(msg.name.begin(), shaft_it);
-            //shaft_position_ = msg.position[0];
-            shaft_velocity_ = msg.velocity[0];
+            //shaft_position_ = msg.position[0]; THIS IS WHAT CAUSED THE SEGMENTATION FAULT
+            shaft_velocity_ = msg.velocity[0]; 
         }
         else
         {
@@ -131,7 +132,7 @@ private:
         std::cout << "┌─────────────────────── SPEED GAUGE ───────────────────────┐\n";
         
         // Draw the gauge
-        
+        /*
         for (int row = 0; row < gauge_height; row++) {
             std::cout << "│";
             
@@ -178,9 +179,9 @@ private:
             }
             std::cout << "│\n";
         }
+        */
         
-        
-        // Draw scale labels Hopefully it works well
+        // Draw scale labels
         std::cout << "│";
         std::cout << std::setw(6) << "-10" << std::setw(10) << "-5" << std::setw(12) << "0" << std::setw(12) << "5" << std::setw(16) << "10";
         std::cout << "│\n";
