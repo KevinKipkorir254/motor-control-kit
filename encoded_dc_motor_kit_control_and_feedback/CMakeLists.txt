@@ -26,11 +26,16 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+#velocity_feeback_and_topic_frequency.cpp
 add_executable(velocity_commands_publisher src/velocity_publisher.cpp)
 ament_target_dependencies(velocity_commands_publisher rclcpp std_msgs sensor_msgs)
 
+add_executable(velocity_and_frequency_monitor src/velocity_feeback_and_topic_frequency.cpp)
+ament_target_dependencies(velocity_and_frequency_monitor rclcpp std_msgs sensor_msgs)
+
 install(TARGETS
   velocity_commands_publisher
+  velocity_and_frequency_monitor
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
