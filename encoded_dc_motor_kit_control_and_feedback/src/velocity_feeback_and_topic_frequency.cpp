@@ -131,7 +131,7 @@ private:
         std::cout << "┌─────────────────────── SPEED GAUGE ───────────────────────┐\n";
         
         // Draw the gauge
-        /*
+        
         for (int row = 0; row < gauge_height; row++) {
             std::cout << "│";
             
@@ -178,9 +178,9 @@ private:
             }
             std::cout << "│\n";
         }
-        */
         
-        // Draw scale labels
+        
+        // Draw scale labels Hopefully it works well
         std::cout << "│";
         std::cout << std::setw(6) << "-10" << std::setw(10) << "-5" << std::setw(12) << "0" << std::setw(12) << "5" << std::setw(16) << "10";
         std::cout << "│\n";
