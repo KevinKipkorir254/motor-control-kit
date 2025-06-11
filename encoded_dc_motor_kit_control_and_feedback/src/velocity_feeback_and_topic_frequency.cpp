@@ -69,11 +69,11 @@ private:
         // Get shaft position and velocity
         //auto shaft_it = std::find(msg.name.begin(), msg.name.end(), "");
         auto shaft_it = true; //TODO RUN CORRECT THIS TEMPORARY FIX beacuse I now it is present
-        if (shaft_it != msg.name.end())
+        if (shaft_it == true)
         {
-            int shaft_index = std::distance(msg.name.begin(), shaft_it);
-            shaft_position_ = msg.position[shaft_index];
-            shaft_velocity_ = msg.velocity[shaft_index];
+            //int shaft_index = std::distance(msg.name.begin(), shaft_it);
+            shaft_position_ = msg.position[0];
+            shaft_velocity_ = msg.velocity[0];
         }
         else
         {
@@ -131,6 +131,7 @@ private:
         std::cout << "┌─────────────────────── SPEED GAUGE ───────────────────────┐\n";
         
         // Draw the gauge
+        /*
         for (int row = 0; row < gauge_height; row++) {
             std::cout << "│";
             
@@ -177,6 +178,7 @@ private:
             }
             std::cout << "│\n";
         }
+        */
         
         // Draw scale labels
         std::cout << "│";
