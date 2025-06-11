@@ -72,7 +72,7 @@ private:
         if (shaft_it == true)
         {
             //int shaft_index = std::distance(msg.name.begin(), shaft_it);
-            shaft_position_ = msg.position[0];
+            //shaft_position_ = msg.position[0];
             shaft_velocity_ = msg.velocity[0];
         }
         else
