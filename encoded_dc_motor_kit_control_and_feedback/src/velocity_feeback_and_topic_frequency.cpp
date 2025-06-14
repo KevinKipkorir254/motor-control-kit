@@ -25,6 +25,9 @@ public:
     velocity_and_frequency_terminal_display()
         : Node("velocity_and_frequency_terminal_display"), msg_count_(0), last_msg_count_(0), frequency_(0.0)
     {
+        // Clear screen and hide cursor moved this here to allow seeing the motor-kit command
+        std::cout << "\033[2J\033[H\033[?25l" << std::flush;
+
         // Text to display using figlet
         std::string text = "MOTOR-KIT";
         std::string command = "figlet -w $(tput cols) -c \"" + text + "\" | lolcat";
@@ -47,9 +50,6 @@ public:
         frequency_timer_ = this->create_wall_timer(
             std::chrono::milliseconds(1000),
             std::bind(&velocity_and_frequency_terminal_display::calculate_frequency, this));
-
-        // Clear screen and hide cursor
-        std::cout << "\033[2J\033[H\033[?25l" << std::flush;
         
         // Initial display
         draw_dashboard();
