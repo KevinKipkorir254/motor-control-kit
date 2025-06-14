@@ -25,7 +25,7 @@ public:
         // Text to display using figlet
         std::string text = "MOTOR-KIT";
         // Construct the figlet command with the -c option for centering
-        std::string command = "figlet -w $(tput cols) -c " + text;
+        std::string command = "figlet -w $(tput cols) -c \"" + text + "\" | lolcat"; //added lolcat
         // Execute the command
         std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
