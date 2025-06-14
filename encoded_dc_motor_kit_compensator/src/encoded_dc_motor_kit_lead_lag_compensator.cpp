@@ -22,6 +22,9 @@ public:
     LeadLagCompensator()
         : Node("LeadLagCompensator"), count_(0)
     {
+        // Clear screen and hide cursor moved this here to allow seeing the motor-kit command
+        std::cout << "\033[2J\033[H\033[?25l" << std::flush;
+
         // Text to display using figlet
         std::string text = "MOTOR-KIT";
         // Construct the figlet command with the -c option for centering
