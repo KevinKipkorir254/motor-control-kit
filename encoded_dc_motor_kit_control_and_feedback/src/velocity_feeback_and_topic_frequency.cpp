@@ -146,7 +146,7 @@ void draw_speed_gauge()
     double needle_angle = M_PI * (1.0 - normalized_speed);  // Reverse for left-to-right
     
     // Don't print newline here since we're positioning manually
-    std::cout << "┌─────────────────────── SPEED GAUGE ────────────────────────┐";
+    std::cout << "─────────────────────── SPEED GAUGE ────────────────────────";
     
     // Move to next line at same column position
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -155,25 +155,25 @@ void draw_speed_gauge()
     int start_col = (terminal_width - box_width) / 2 + 1;
     
     // Draw scale labels
-    std::cout << "\033[" << (11) << ";" << start_col << "H";
-    std::cout << "│";
-    std::cout << std::setw(6) << "-10" << std::setw(10) << "-5" << std::setw(12) << "0" << std::setw(12) << "5" << std::setw(16) << "10";
-    std::cout << "    │";
+    //std::cout << "\033[" << (11) << ";" << start_col << "H";
+    //std::cout << "│";
+    //std::cout << std::setw(6) << "-10" << std::setw(10) << "-5" << std::setw(12) << "0" << std::setw(12) << "5" << std::setw(16) << "10";
+    //std::cout << "    │";
     
     // Display current velocity value
-    std::cout << "\033[" << (12) << ";" << start_col << "H";
-    std::cout << "│" << std::setw(25) << "Shaft Velocity: ";
+    std::cout << "\033[" << (11) << ";" << start_col << "H";
+    std::cout << std::setw(25) << "Shaft Velocity: ";
     std::cout << std::fixed << std::setprecision(2) << shaft_velocity_;
-    std::cout << std::setw(34) << "│";
+    //std::cout << std::setw(34) << "│";
     
     // Display shaft position
-    std::cout << "\033[" << (13) << ";" << start_col << "H";
-    std::cout << "│" << std::setw(25) << "Shaft Position: ";
+    std::cout << "\033[" << (12) << ";" << start_col << "H";
+    std::cout << std::setw(25) << "Shaft Position: ";
     std::cout << std::fixed << std::setprecision(2) << shaft_position_;
-    std::cout << std::setw(34) << "│";
+    //std::cout << std::setw(34) << "│";
     
-    std::cout << "\033[" << (14) << ";" << start_col << "H";
-    std::cout << "└────────────────────────────────────────────────────────────┘";
+    std::cout << "\033[" << (13) << ";" << start_col << "H";
+    std::cout << "────────────────────────────────────────────────────────────";
 }
 
 void draw_frequency_display()
@@ -184,20 +184,20 @@ void draw_frequency_display()
     int box_width = 64; // This box is slightly wider
     int start_col = (terminal_width - box_width) / 2 + 1;
     
-    std::cout << "┌────────────────── filtered_velocity FREQUENCY ─────────────────┐";
+    std::cout << "────────────────── filtered_velocity FREQUENCY ─────────────────";
     
     std::cout << "\033[" << (16) << ";" << start_col << "H";
-    std::cout << "│" << std::setw(30) << "Topic Frequency: ";
+    std::cout << std::setw(30) << "Topic Frequency: ";
     std::cout << std::fixed << std::setprecision(1) << frequency_ << " Hz";
-    std::cout << std::setw(31) << "│";
+    //std::cout << std::setw(31) << "│";
     
     std::cout << "\033[" << (17) << ";" << start_col << "H";
-    std::cout << "│" << std::setw(30) << "Total Messages: ";
+    std::cout << std::setw(30) << "Total Messages: ";
     std::cout << msg_count_;
-    std::cout << std::setw(36) << "│";
+    //std::cout << std::setw(36) << "│";
     
     std::cout << "\033[" << (18) << ";" << start_col << "H";
-    std::cout << "└────────────────────────────────────────────────────────────────┘";
+    std::cout << "────────────────────────────────────────────────────────────────";
 }
 
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
