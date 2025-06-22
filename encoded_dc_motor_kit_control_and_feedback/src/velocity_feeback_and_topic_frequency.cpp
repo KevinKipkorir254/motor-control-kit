@@ -155,10 +155,10 @@ void draw_speed_gauge()
     int start_col = (terminal_width - box_width) / 2 + 1;
     
     // Draw scale labels
-    //std::cout << "\033[" << (11) << ";" << start_col << "H";
-    //std::cout << "│";
-    //std::cout << std::setw(6) << "-10" << std::setw(10) << "-5" << std::setw(12) << "0" << std::setw(12) << "5" << std::setw(16) << "10";
-    //std::cout << "    │";
+    //
+    //
+    //
+    //
     
     // Display current velocity value
     std::cout << "\033[" << (11) << ";" << start_col << "H";
@@ -215,7 +215,7 @@ void draw_frequency_display()
 
 int main(int argc, char *argv[])
 {
-    rclcpp::init(argc, argv);
+   rclcpp::init(argc, argv);
     
     auto node = std::make_shared<velocity_and_frequency_terminal_display>();
     
