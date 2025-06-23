@@ -21,6 +21,9 @@ public:
     velocity_publisher_server()
         : Node("velocity_publisher_server"), current_velocity_(0.0)
     {
+        //clear the terminal before anything
+         std::cout << "\033[2J\033[H\033[?25l" << std::flush;      
+        
         // Text to display using figlet
         std::string text = "MOTOR-KIT";
         std::string command = "figlet -w $(tput cols) -c \"" + text + "\" | lolcat";
