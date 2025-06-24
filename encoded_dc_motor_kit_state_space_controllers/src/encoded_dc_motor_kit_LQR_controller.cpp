@@ -18,13 +18,24 @@ class LeadCompensator : public rclcpp::Node
 public:
     LeadCompensator()
         : Node("LeadCompensator"), count_(0)
-    {
+  {    
+        
+        // Clear screen and hide cursor moved this here to allow seeing the motor-kit command       
+        // Text to display using figlet
+        std::cout << "\033[2J\033[H\033[?25l" << std::flush;
+
+        // Text to display using figlet
+        std::string text = "MOTOR-KIT";
+        // Construct the figlet command with the -c option for centering
+        std::string command = "figlet -w $(tput cols) -c \"" + text + "\" | lolcat"; //added lolcat       
+        // Execute the command
+        std::system(command.c_str());
         publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/effort_controller/commands", 10);
-        filtered_velocity_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/filtered_velocity", 10);
+        filtered_velocity_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("/filtered_velocity", 10);
         subscription_ = this->create_subscription<std_msgs::msg::Float64MultiArray>("/velocity/commands", 10, std::bind(&LeadCompensator::update_reference_velocity, this, std::placeholders::_1));
         joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>("/joint_states", 10, std::bind(&LeadCompensator::update_shaft_state_and_control_value, this, std::placeholders::_1));
-        previous_time = this->get_clock()->now();
-    }
+        previous_time = this->get_clock()->now();   
+   }
 
 private:
     void timer_callback()
@@ -72,11 +83,12 @@ private:
     }
 
     void publish_filtered_velocity_value(double filtered_velocity)
-    {
-        auto filtered_velocity_message = std_msgs::msg::Float64MultiArray();
-        filtered_velocity_message.data.push_back(filtered_velocity);
+     {
+        auto filtered_velocity_message = sensor_msgs::msg::JointState();
+        filtered_velocity_message.header.stamp = this->now();  // Assign ROS timestamp
+        filtered_velocity_message.velocity.push_back(filtered_velocity);
         filtered_velocity_publisher_->publish(filtered_velocity_message);
-    }
+    }  
 
     double filter_voltage_velocity_value(double shaft_velocity)
     {
@@ -136,7 +148,7 @@ private:
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr publisher_;
-    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr filtered_velocity_publisher_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr filtered_velocity_publisher_;
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr subscription_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
     volatile double reference_velocity;
