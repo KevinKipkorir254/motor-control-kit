@@ -1,4 +1,5 @@
 # ESP32 WROOM Code for Motor Control
+## MOTOR CONTROL
 This section contains code to be uploaded to the ESP32 WROOM microcontroller. It defines the GPIO pin configuration for motor control and encoder feedback, enabling precise control and monitoring.
 
 
@@ -16,4 +17,20 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 | Motor Control - Enable | GPIO 15 | N/A |
 
 ![ESP32 WROOM IMAGE](/encoded_dc_motor_kit_arduino/documentation/images/ESP32%20WROOM.png)
+</div>
+
+## OPTICAL ENCODER PINOUT
+
+<div align="center">
+
+## GPIO Pinouts for velocity reading and position reading.
+
+
+| Function | GPIO Pin | Encoder cable colour | Jumper colour |
+| :-------- | :--------: | :--------: | :--------: |
+| Encoder Channel A |	 | GREEN | ORANGE |
+| Encoder Channel B	|  | WHITE | YELLOW |
+| POWER |  | RED | RED |
+| GROUND |  | BLACK | BROWN |
+
 </div>
