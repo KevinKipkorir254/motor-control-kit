@@ -28,9 +28,9 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 
 | Function | GPIO Pin | Encoder cable colour | Jumper colour |
 | :-------- | :--------: | :--------: | :--------: |
-| Encoder Channel A |	 | GREEN | ORANGE |
-| Encoder Channel B	|  | WHITE | YELLOW |
-| POWER |  | RED | RED |
-| GROUND |  | BLACK | BROWN |
+| Encoder Channel A |	 | green | orange |
+| Encoder Channel B	|  | white | yellow |
+| POWER |  | red | red |
+| GROUND |  | black | brown |
 
 </div>
