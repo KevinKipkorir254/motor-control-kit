@@ -26,11 +26,11 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 ## GPIO Pinouts for velocity reading and position reading.
 
 
-| Function | GPIO Pin | Encoder cable colour | Jumper colour |
-| :-------- | :--------: | :--------: | :--------: |
-| Encoder Channel A |	 | green | orange |
-| Encoder Channel B	|  | white | yellow |
-| POWER |  | red | red |
-| GROUND |  | black | brown |
+| Function | GPIO Pin | Encoder cable colour | Jumper colour | Wire function|
+| :-------- | :--------: | :--------: | :--------: | :--------:|
+| Encoder Channel A |	 | green | orange | A phase |
+| Encoder Channel B	|  | white | yellow | B phase |
+| POWER |  | red | red | VDD|
+| GROUND |  | black | brown | GND|
 
 </div>
