@@ -30,7 +30,7 @@ This section contains code to be uploaded to the ESP32 WROOM microcontroller. It
 | :-------- | :--------: | :--------: | :--------: | :--------:|
 | Encoder Channel A |	 | green | orange | A phase |
 | Encoder Channel B	|  | white | yellow | B phase |
-| POWER |  | red | red | VDD|
+| POWER |  | red | red | VDD |
 | GROUND |  | black | brown | GND|
 
 </div>
